@@ -1,0 +1,42 @@
+{
+  "name": "quakevision-backend",
+  "version": "1.0.0",
+  "description": "QuakeVision — AI-Powered Earthquake Intelligence Platform Backend",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "seed": "node src/seeder.js",
+    "seed:destroy": "node src/seeder.js -d"
+  },
+  "keywords": [
+    "earthquake",
+    "disaster",
+    "analytics",
+    "mern",
+    "backend"
+  ],
+  "author": "Abdul Haque",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^7.2.0",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.1.0",
+    "hpp": "^0.2.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.3.2",
+    "morgan": "^1.10.0",
+    "node-cache": "^5.1.2",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
