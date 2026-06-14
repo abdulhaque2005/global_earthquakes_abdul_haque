@@ -23,6 +23,12 @@ const connectDB = async () => {
   }
 };
 
+const parseNum = (val, isInt = false) => {
+  if (val === null || val === undefined || val === '') return null;
+  const num = isInt ? parseInt(val, 10) : parseFloat(val);
+  return isNaN(num) ? null : num;
+};
+
 const transformRecord = (raw) => {
   const latitude = parseFloat(raw.latitude);
   const longitude = parseFloat(raw.longitude);
@@ -46,17 +52,24 @@ const transformRecord = (raw) => {
     depth,
     magnitude,
     magType: raw.magType || '',
+    nst: parseNum(raw.nst, true),
+    gap: parseNum(raw.gap),
+    dmin: parseNum(raw.dmin),
+    rms: parseNum(raw.rms),
+    net: raw.net || '',
     place: raw.place || 'Unknown',
     type: raw.type || 'earthquake',
     status: raw.status || '',
     locationSource: raw.locationSource || '',
     magSource: raw.magSource || '',
     updated: raw.updated ? new Date(raw.updated) : undefined,
-    horizontalError: raw.horizontalError ? parseFloat(raw.horizontalError) : undefined,
-    depthError: raw.depthError ? parseFloat(raw.depthError) : undefined,
-    magError: raw.magError ? parseFloat(raw.magError) : undefined,
+    horizontalError: parseNum(raw.horizontalError),
+    depthError: parseNum(raw.depthError),
+    magError: parseNum(raw.magError),
+    magNst: parseNum(raw.magNst, true),
     riskLevel,
   };
+
 };
 
 const seedDatabase = async () => {

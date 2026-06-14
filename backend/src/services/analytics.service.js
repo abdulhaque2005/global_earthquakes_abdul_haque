@@ -81,17 +81,14 @@ class AnalyticsService {
     return await Earthquake.aggregate([
       {
         $group: {
-          _id: {
-            year: { $year: '$time' },
-            month: { $month: '$time' },
-          },
+          _id: { $dateToString: { format: '%Y-%m', date: '$time' } },
           count: { $sum: 1 },
           avgMagnitude: { $avg: '$magnitude' },
           maxMagnitude: { $max: '$magnitude' },
         },
       },
       {
-        $sort: { '_id.year': 1, '_id.month': 1 },
+        $sort: { '_id': 1 },
       },
     ]);
   }
