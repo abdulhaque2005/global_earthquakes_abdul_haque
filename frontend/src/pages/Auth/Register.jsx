@@ -19,7 +19,7 @@ const Register = () => {
     if (user) navigate('/dashboard');
   }, [user, navigate]);
   const formik = useFormik({
-    initialValues: { name: '', email: '', password: '', confirmPassword: '' },
+    initialValues: { name: '', email: '', password: '', confirmPassword: '', role: 'user' },
     validationSchema: Yup.object({
       name: Yup.string().required('Name is required'),
       email: Yup.string().email('Invalid email address').required('Email is required'),
@@ -40,55 +40,78 @@ const Register = () => {
     { name: 'confirmPassword', label: 'Confirm Password', type: 'password', placeholder: 'Re-enter password' },
   ];
   return (
-    <div className="flex justify-center items-center min-h-[calc(100vh-64px)] px-4 py-8 bg-slate-50 dark:bg-[#0f1115] relative overflow-hidden">
+    <div className="flex justify-center items-start sm:items-center h-full w-full bg-slate-50 dark:bg-[#0f1115] relative rounded-3xl overflow-y-auto overflow-x-hidden py-4 sm:py-0">
       <Helmet>
         <title>Register | QuakeVision - Global Earthquake Analytics</title>
         <meta name="description" content="Create a QuakeVision account to access real-time earthquake tracking, personalized seismic alerts, and advanced global earthquake analytics." />
       </Helmet>
       <div className="absolute top-[-10%] right-[-10%] w-96 h-96 bg-brand-500/20 rounded-full blur-[100px] animate-pulse-glow"></div>
       <div className="absolute bottom-[-10%] left-[-10%] w-96 h-96 bg-blue-500/20 rounded-full blur-[100px] animate-pulse-glow" style={{ animationDelay: '2s' }}></div>
-      <div className="w-full max-w-md bg-white/80 dark:bg-[#1a1c23]/80 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-3xl p-8 sm:p-10 shadow-2xl relative z-10 transition-all duration-500 transform translate-y-0 opacity-100 animate-fade-in">
-        <div className="text-center mb-10">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center mx-auto mb-5 shadow-lg shadow-brand-500/30">
-            <Globe size={32} className="text-white" />
+      <div className="w-full max-w-md bg-white/80 dark:bg-[#1a1c23]/80 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-3xl p-5 sm:p-6 shadow-2xl relative z-10 transition-all duration-500 transform translate-y-0 opacity-100 animate-fade-in my-auto">
+        <div className="text-center mb-4">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center mx-auto mb-2 shadow-md shadow-brand-500/30">
+            <Globe size={24} className="text-white" />
           </div>
-          <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-2">Create Account</h2>
-          <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Join to access earthquake analytics</p>
+          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-1">Create Account</h2>
+          <p className="text-slate-500 dark:text-slate-400 text-xs font-medium">Join to access earthquake analytics</p>
         </div>
         {error && (
-          <div className="px-4 py-3 rounded-xl mb-6 bg-red-500/10 border border-red-500/20 text-red-500 text-sm font-medium text-center animate-fade-in">
+          <div className="px-4 py-2 rounded-xl mb-4 bg-red-500/10 border border-red-500/20 text-red-500 text-sm font-medium text-center animate-fade-in">
             {error}
           </div>
         )}
-        <form onSubmit={formik.handleSubmit} className="flex flex-col gap-6">
+        <form onSubmit={formik.handleSubmit} className="flex flex-col gap-3">
+          <div className="relative flex bg-slate-200/80 dark:bg-slate-800/80 p-1.5 rounded-2xl mb-1 shadow-inner overflow-hidden">
+            <div
+              className={`absolute top-1.5 bottom-1.5 bg-white dark:bg-slate-700 rounded-xl shadow-sm transition-transform duration-500 ease-out`}
+              style={{
+                width: 'calc(50% - 6px)',
+                transform: formik.values.role === 'user' ? 'translateX(0)' : 'translateX(100%)',
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => formik.setFieldValue('role', 'user')}
+              className={`relative z-10 flex-1 py-2.5 text-xs font-extrabold uppercase tracking-widest rounded-xl transition-colors duration-300 ${formik.values.role === 'user' ? 'text-brand-600 dark:text-brand-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
+            >
+              Standard
+            </button>
+            <button
+              type="button"
+              onClick={() => formik.setFieldValue('role', 'admin')}
+              className={`relative z-10 flex-1 py-2.5 text-xs font-extrabold uppercase tracking-widest rounded-xl transition-colors duration-300 ${formik.values.role === 'admin' ? 'text-red-500 dark:text-red-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
+            >
+              Administrator
+            </button>
+          </div>
           {fields.map((f) => (
             <div key={f.name}>
-              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 ml-1">{f.label}</label>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 ml-1">{f.label}</label>
               <input
                 type={f.type} name={f.name}
-                className={`w-full px-5 py-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800/50 border border-transparent focus:border-brand-500 focus:bg-white dark:focus:bg-slate-800 outline-none transition-all duration-300 text-slate-900 dark:text-white placeholder-slate-400 shadow-inner ${formik.touched[f.name] && formik.errors[f.name] ? 'border-red-500 focus:ring-red-500/20' : ''}`}
+                className={`w-full px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-transparent focus:border-brand-500 focus:bg-white dark:focus:bg-slate-800 outline-none transition-all duration-300 text-slate-900 dark:text-white placeholder-slate-400 shadow-inner ${formik.touched[f.name] && formik.errors[f.name] ? 'border-red-500 focus:ring-red-500/20' : ''}`}
                 placeholder={f.placeholder}
                 value={formik.values[f.name]}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
               {formik.touched[f.name] && formik.errors[f.name] && (
-                <div className="text-red-500 text-xs font-medium mt-2 ml-1">{formik.errors[f.name]}</div>
+                <div className="text-red-500 text-xs font-medium mt-1 ml-1">{formik.errors[f.name]}</div>
               )}
             </div>
           ))}
-          <button type="submit" className="w-full py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 dark:bg-brand-500 dark:hover:bg-brand-600 text-white text-base font-bold transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg flex items-center justify-center gap-2 mt-2" disabled={loading}>
+          <button type="submit" className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-brand-500 dark:hover:bg-brand-600 text-white text-base font-bold transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg flex items-center justify-center gap-2 mt-1" disabled={loading}>
             {loading ? (
               <>
                 <div className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                Creating account...
+                Creating...
               </>
             ) : (
               'Create Account'
             )}
           </button>
         </form>
-        <div className="flex items-center gap-4 my-8">
+        <div className="flex items-center gap-4 my-4">
           <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700/50"></div>
           <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">or sign up with</span>
           <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700/50"></div>
@@ -108,7 +131,7 @@ const Register = () => {
             width="100%"
           />
         </div>
-        <p className="text-center mt-8 text-sm font-medium text-slate-500">
+        <p className="text-center mt-4 text-sm font-medium text-slate-500">
           Already have an account?{' '}
           <Link to="/login" className="text-brand-500 font-bold hover:text-brand-400 transition-colors">Login here</Link>
         </p>
