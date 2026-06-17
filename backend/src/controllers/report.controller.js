@@ -9,6 +9,20 @@ export const getReports = async (req, res, next) => {
 
 export const createReport = async (req, res, next) => {
   try {
+    const { location, intensity, description } = req.body;
+
+    // Map User-Felt form data to the Report schema
+    if (location && description) {
+      const userReport = await Report.create({
+        title: `Felt Report: ${location}`,
+        summary: description,
+        type: 'User-Felt',
+        metrics: { intensity, location },
+        generatedBy: req.user.id
+      });
+      return res.status(201).json({ success: true, data: userReport });
+    }
+
     const report = await Report.create({
       ...req.body,
       generatedBy: req.user.id
