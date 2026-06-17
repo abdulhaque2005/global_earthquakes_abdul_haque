@@ -40,17 +40,17 @@ const Register = () => {
     { name: 'confirmPassword', label: 'Confirm Password', type: 'password', placeholder: 'Re-enter password' },
   ];
   return (
-    <div className="flex justify-center items-center min-h-[calc(100vh-64px)] px-4 py-8 bg-slate-50 dark:bg-[#0f1115] relative overflow-hidden">
+    <div className="flex justify-center items-center h-full w-full bg-slate-50 dark:bg-[#0f1115] relative rounded-3xl overflow-hidden">
       <Helmet>
         <title>Register | QuakeVision - Global Earthquake Analytics</title>
         <meta name="description" content="Create a QuakeVision account to access real-time earthquake tracking, personalized seismic alerts, and advanced global earthquake analytics." />
       </Helmet>
       <div className="absolute top-[-10%] right-[-10%] w-96 h-96 bg-brand-500/20 rounded-full blur-[100px] animate-pulse-glow"></div>
       <div className="absolute bottom-[-10%] left-[-10%] w-96 h-96 bg-blue-500/20 rounded-full blur-[100px] animate-pulse-glow" style={{ animationDelay: '2s' }}></div>
-      <div className="w-full max-w-md bg-white/80 dark:bg-[#1a1c23]/80 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-3xl p-8 sm:p-10 shadow-2xl relative z-10 transition-all duration-500 transform translate-y-0 opacity-100 animate-fade-in">
-        <div className="text-center mb-10">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center mx-auto mb-5 shadow-lg shadow-brand-500/30">
-            <Globe size={32} className="text-white" />
+      <div className="w-full max-w-md bg-white/80 dark:bg-[#1a1c23]/80 backdrop-blur-xl border border-white/20 dark:border-white/5 rounded-3xl p-6 sm:p-8 shadow-2xl relative z-10 transition-all duration-500 transform translate-y-0 opacity-100 animate-fade-in">
+        <div className="text-center mb-6">
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center mx-auto mb-3 shadow-md shadow-brand-500/30">
+            <Globe size={28} className="text-white" />
           </div>
           <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-2">Create Account</h2>
           <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Join to access earthquake analytics</p>
@@ -60,7 +60,7 @@ const Register = () => {
             {error}
           </div>
         )}
-        <form onSubmit={formik.handleSubmit} className="flex flex-col gap-6">
+        <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
           {fields.map((f) => (
             <div key={f.name}>
               <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2 ml-1">{f.label}</label>
@@ -77,7 +77,7 @@ const Register = () => {
               )}
             </div>
           ))}
-          <button type="submit" className="w-full py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 dark:bg-brand-500 dark:hover:bg-brand-600 text-white text-base font-bold transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg flex items-center justify-center gap-2 mt-2" disabled={loading}>
+          <button type="submit" className="w-full py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-brand-500 dark:hover:bg-brand-600 text-white text-base font-bold transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg flex items-center justify-center gap-2 mt-2" disabled={loading}>
             {loading ? (
               <>
                 <div className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
@@ -88,7 +88,7 @@ const Register = () => {
             )}
           </button>
         </form>
-        <div className="flex items-center gap-4 my-8">
+        <div className="flex items-center gap-4 my-5">
           <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700/50"></div>
           <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">or sign up with</span>
           <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700/50"></div>
@@ -108,7 +108,7 @@ const Register = () => {
             width="100%"
           />
         </div>
-        <p className="text-center mt-8 text-sm font-medium text-slate-500">
+        <p className="text-center mt-5 text-sm font-medium text-slate-500">
           Already have an account?{' '}
           <Link to="/login" className="text-brand-500 font-bold hover:text-brand-400 transition-colors">Login here</Link>
         </p>
