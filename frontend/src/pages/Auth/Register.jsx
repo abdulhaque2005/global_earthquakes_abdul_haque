@@ -19,7 +19,7 @@ const Register = () => {
     if (user) navigate('/dashboard');
   }, [user, navigate]);
   const formik = useFormik({
-    initialValues: { name: '', email: '', password: '', confirmPassword: '' },
+    initialValues: { name: '', email: '', password: '', confirmPassword: '', role: 'user' },
     validationSchema: Yup.object({
       name: Yup.string().required('Name is required'),
       email: Yup.string().email('Invalid email address').required('Email is required'),
@@ -61,6 +61,29 @@ const Register = () => {
           </div>
         )}
         <form onSubmit={formik.handleSubmit} className="flex flex-col gap-3">
+          <div className="relative flex bg-slate-200/80 dark:bg-slate-800/80 p-1.5 rounded-2xl mb-1 shadow-inner overflow-hidden">
+            <div
+              className={`absolute top-1.5 bottom-1.5 bg-white dark:bg-slate-700 rounded-xl shadow-sm transition-transform duration-500 ease-out`}
+              style={{
+                width: 'calc(50% - 6px)',
+                transform: formik.values.role === 'user' ? 'translateX(0)' : 'translateX(100%)',
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => formik.setFieldValue('role', 'user')}
+              className={`relative z-10 flex-1 py-2.5 text-xs font-extrabold uppercase tracking-widest rounded-xl transition-colors duration-300 ${formik.values.role === 'user' ? 'text-brand-600 dark:text-brand-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
+            >
+              Standard
+            </button>
+            <button
+              type="button"
+              onClick={() => formik.setFieldValue('role', 'admin')}
+              className={`relative z-10 flex-1 py-2.5 text-xs font-extrabold uppercase tracking-widest rounded-xl transition-colors duration-300 ${formik.values.role === 'admin' ? 'text-red-500 dark:text-red-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'}`}
+            >
+              Administrator
+            </button>
+          </div>
           {fields.map((f) => (
             <div key={f.name}>
               <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1 ml-1">{f.label}</label>

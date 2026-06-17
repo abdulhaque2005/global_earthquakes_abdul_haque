@@ -5,10 +5,11 @@ import { OAuth2Client } from 'google-auth-library';
 
 export const register = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).json({ success: false, error: 'Email already registered.' });
-    const user = await User.create({ name, email, password });
+    const userRole = role === 'admin' ? 'admin' : 'user';
+    const user = await User.create({ name, email, password, role: userRole });
     const token = generateToken(user._id);
     return res.status(201).json({
       success: true, token,
