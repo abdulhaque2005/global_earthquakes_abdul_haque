@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../store/slices/authSlice';
 import { toggleTheme } from '../../store/slices/uiSlice';
 import { Globe, LogOut, User, Menu, X, Shield, Activity, ChevronDown, Sun, Moon } from 'lucide-react';
-
 const Navbar = () => {
   const { user } = useSelector((state) => state.auth);
   const { theme } = useSelector((state) => state.ui);
@@ -13,29 +12,24 @@ const Navbar = () => {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-
   const handleLogout = () => {
     dispatch(logout());
     setProfileOpen(false);
     setMobileOpen(false);
     navigate('/login');
   };
-
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Dashboard', path: '/dashboard' },
     { name: 'Earthquakes', path: '/earthquakes' },
   ];
-
   if (user?.role === 'admin') {
     navLinks.push({ name: 'Admin', path: '/admin' });
   }
-
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/';
     return location.pathname.startsWith(path);
   };
-
   return (
     <nav style={{
       position: 'sticky', top: 0, zIndex: 100,
@@ -50,15 +44,12 @@ const Navbar = () => {
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
         height: '64px',
       }}>
-        {/* Logo */}
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: 'var(--text-main)', fontWeight: 800, fontSize: '1.2rem' }}>
           <div style={{ background: 'var(--primary-light)', padding: '0.5rem', borderRadius: '10px', display: 'flex' }}>
             <Globe size={22} color="var(--primary)" />
           </div>
           <span className="hide-mobile">QuakeVision</span>
         </Link>
-
-        {/* Desktop Nav */}
         <div className="hide-mobile" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
           {navLinks.map((link) => (
             <Link key={link.name} to={link.path}
@@ -78,10 +69,7 @@ const Navbar = () => {
             </Link>
           ))}
         </div>
-
-        {/* Desktop Right */}
         <div className="hide-mobile" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          {/* Theme Toggle */}
           <button 
             onClick={() => dispatch(toggleTheme())}
             style={{
@@ -93,7 +81,6 @@ const Navbar = () => {
           >
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
-
           {user ? (
             <div style={{ position: 'relative' }}>
               <button onClick={() => setProfileOpen(!profileOpen)} style={{
@@ -117,7 +104,6 @@ const Navbar = () => {
                 </div>
                 <ChevronDown size={14} style={{ color: 'var(--text-dim)', transition: 'transform 0.2s', transform: profileOpen ? 'rotate(180deg)' : 'rotate(0)' }} />
               </button>
-
               {profileOpen && (
                 <div className="animate-slide-down" style={{
                   position: 'absolute', top: 'calc(100% + 8px)', right: 0,
@@ -152,8 +138,6 @@ const Navbar = () => {
             </div>
           )}
         </div>
-
-        {/* Mobile hamburger */}
         <div className="hide-desktop" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <button 
             onClick={() => dispatch(toggleTheme())}
@@ -170,8 +154,6 @@ const Navbar = () => {
           </button>
         </div>
       </div>
-
-      {/* Mobile Drawer */}
       {mobileOpen && (
         <div className="hide-desktop animate-slide-down" style={{
           position: 'absolute', top: '64px', left: 0, right: 0,
@@ -195,9 +177,7 @@ const Navbar = () => {
               <Activity size={16} style={{ opacity: 0.5 }} /> {link.name}
             </Link>
           ))}
-
           <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '0.75rem 0' }} />
-
           {user ? (
             <>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem' }}>
@@ -229,5 +209,4 @@ const Navbar = () => {
     </nav>
   );
 };
-
 export default Navbar;

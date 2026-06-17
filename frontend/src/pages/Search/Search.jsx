@@ -4,7 +4,6 @@ import { earthquakeService } from '../../services/earthquakeService';
 import { Search as SearchIcon, Activity, MapPin, ChevronRight, Calendar, Clock, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-
 const getMagConfig = (mag) => {
   if (mag >= 7)  return { color: 'text-red-600',    bg: 'bg-red-500/10 border-red-500/20',    bar: 'bg-red-500'    };
   if (mag >= 6)  return { color: 'text-red-500',    bg: 'bg-red-500/10 border-red-500/20',    bar: 'bg-red-400'    };
@@ -12,7 +11,6 @@ const getMagConfig = (mag) => {
   if (mag >= 4)  return { color: 'text-amber-600',  bg: 'bg-amber-500/10 border-amber-500/20',  bar: 'bg-amber-400'  };
   return          { color: 'text-emerald-600', bg: 'bg-emerald-500/10 border-emerald-500/20', bar: 'bg-emerald-400' };
 };
-
 const ResultRow = ({ eq, navigate, index }) => {
   const cfg = getMagConfig(eq.magnitude);
   return (
@@ -22,13 +20,10 @@ const ResultRow = ({ eq, navigate, index }) => {
       className="group flex items-center gap-4 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/50 dark:hover:shadow-black/30 hover:border-brand-500/30 dark:hover:border-brand-500/30 transition-all duration-200"
       style={{ animationDelay: `${index * 40}ms` }}
     >
-      {/* Magnitude badge */}
       <div className={`flex flex-col items-center justify-center w-14 h-14 shrink-0 rounded-xl border ${cfg.bg}`}>
         <span className={`text-[10px] font-bold tracking-wide uppercase ${cfg.color} opacity-70`}>Mag</span>
         <span className={`text-xl font-black leading-none ${cfg.color}`}>{eq.magnitude?.toFixed(1) ?? '—'}</span>
       </div>
-
-      {/* Info */}
       <div className="flex-1 min-w-0">
         <h3 className="font-bold text-slate-900 dark:text-white text-sm leading-tight truncate group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
           {eq.place || eq.location || 'Unknown Location'}
@@ -45,8 +40,6 @@ const ResultRow = ({ eq, navigate, index }) => {
           </span>
         </div>
       </div>
-
-      {/* Arrow */}
       <ChevronRight
         size={18}
         className="text-slate-300 dark:text-slate-700 group-hover:text-brand-500 group-hover:translate-x-0.5 transition-all duration-200 shrink-0"
@@ -54,7 +47,6 @@ const ResultRow = ({ eq, navigate, index }) => {
     </div>
   );
 };
-
 const Search = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
@@ -62,7 +54,6 @@ const Search = () => {
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
   const navigate = useNavigate();
-
   // Load default recent earthquakes on mount
   useEffect(() => {
     const loadDefaults = async () => {
@@ -78,8 +69,6 @@ const Search = () => {
     };
     loadDefaults();
   }, []);
-
-  // Debounced live search
   useEffect(() => {
     if (!query.trim()) {
       setResults([]);
@@ -99,17 +88,13 @@ const Search = () => {
     }, 350);
     return () => clearTimeout(timer);
   }, [query]);
-
   const displayData = query.trim() ? results : defaultData;
   const isSearching = query.trim().length > 0;
-
   return (
     <div className="w-full max-w-3xl mx-auto py-6 flex flex-col gap-6">
       <Helmet>
         <title>Search | QuakeVision</title>
       </Helmet>
-
-      {/* Header */}
       <div className="text-center">
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-500/10 border border-brand-500/20 mb-4">
           <SearchIcon size={26} className="text-brand-500" />
@@ -121,8 +106,6 @@ const Search = () => {
           Search for seismic events by country, city, or region. Recent events shown by default.
         </p>
       </div>
-
-      {/* Search input */}
       <div className="relative">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
           {loading
@@ -147,8 +130,6 @@ const Search = () => {
           </button>
         )}
       </div>
-
-      {/* Results label */}
       <div className="flex items-center justify-between px-1">
         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
           {isSearching
@@ -166,8 +147,6 @@ const Search = () => {
           </span>
         )}
       </div>
-
-      {/* Results list */}
       <div className="flex flex-col gap-3">
         {initialLoading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
@@ -196,7 +175,4 @@ const Search = () => {
     </div>
   );
 };
-
 export default Search;
-
-

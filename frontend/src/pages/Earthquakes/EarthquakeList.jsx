@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import EarthquakeCard from '../../components/Earthquake/EarthquakeCard';
 import AddEarthquakeModal from '../../components/Earthquake/AddEarthquakeModal';
-
 const EarthquakeList = () => {
   const [earthquakes, setEarthquakes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,8 +12,6 @@ const EarthquakeList = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  
-  // Filter states
   const [filters, setFilters] = useState({
     place: '',
     minMagnitude: '',
@@ -23,44 +20,36 @@ const EarthquakeList = () => {
     maxDepth: '',
     sort: '-time'
   });
-
   const navigate = useNavigate();
   const observer = useRef();
-
   const lastElementRef = useCallback(node => {
     if (loading || loadingMore) return;
     if (observer.current) observer.current.disconnect();
-    
     observer.current = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting && hasMore) {
         setPage(prev => prev + 1);
       }
     });
-    
     if (node) observer.current.observe(node);
   }, [loading, loadingMore, hasMore]);
-
   const fetchEarthquakes = async (pageNum, isNewSearch = false) => {
     try {
       if (isNewSearch) setLoading(true);
       else setLoadingMore(true);
-
       const params = {
         limit: 50,
         page: pageNum,
         ...filters
       };
-
       const res = await earthquakeService.getEarthquakes(params);
       const data = res.data || res;
-      
       if (Array.isArray(data)) {
         if (isNewSearch) {
           setEarthquakes(data);
         } else {
           setEarthquakes(prev => [...prev, ...data]);
         }
-        setHasMore(data.length === 50); // If we got 50, there might be more
+        setHasMore(data.length === 50); 
       }
     } catch (err) {
       console.error("Failed to load list", err);
@@ -69,27 +58,22 @@ const EarthquakeList = () => {
       setLoadingMore(false);
     }
   };
-
   useEffect(() => {
-    // debounce fetching if typing search
     const timer = setTimeout(() => {
       fetchEarthquakes(1, true);
     }, 500);
     return () => clearTimeout(timer);
   }, [filters]);
-
   useEffect(() => {
     if (page > 1) {
       fetchEarthquakes(page, false);
     }
   }, [page]);
-
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters(prev => ({ ...prev, [name]: value }));
     setPage(1);
   };
-
   const clearFilters = () => {
     setFilters({
       place: '',
@@ -101,14 +85,11 @@ const EarthquakeList = () => {
     });
     setPage(1);
   };
-
   return (
     <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-6">
       <Helmet>
         <title>Earthquakes | QuakeVision</title>
       </Helmet>
-
-      {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 mb-1">
@@ -139,10 +120,7 @@ const EarthquakeList = () => {
           </button>
         </div>
       </div>
-
       <div className="flex flex-col lg:flex-row gap-5 items-start">
-
-        {/* Filters Panel */}
         <div className="w-full lg:w-72 shrink-0 sticky top-20 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
           <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm font-semibold text-slate-800 dark:text-white">
@@ -155,9 +133,7 @@ const EarthquakeList = () => {
               <RefreshCw size={11} /> Reset
             </button>
           </div>
-
           <div className="p-5 space-y-5">
-            {/* Location Search */}
             <div>
               <label className="block text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2">Location</label>
               <div className="relative">
@@ -169,8 +145,6 @@ const EarthquakeList = () => {
                 />
               </div>
             </div>
-
-            {/* Magnitude */}
             <div>
               <label className="block text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2">Magnitude</label>
               <div className="flex gap-2">
@@ -186,8 +160,6 @@ const EarthquakeList = () => {
                 />
               </div>
             </div>
-
-            {/* Depth */}
             <div>
               <label className="block text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2">Depth (km)</label>
               <div className="flex gap-2">
@@ -203,8 +175,6 @@ const EarthquakeList = () => {
                 />
               </div>
             </div>
-
-            {/* Sort */}
             <div>
               <label className="block text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2">Sort By</label>
               <select
@@ -221,10 +191,7 @@ const EarthquakeList = () => {
             </div>
           </div>
         </div>
-
-        {/* Results Grid */}
         <div className="flex-1 min-w-0">
-          {/* Results Count Bar */}
           <div className="flex items-center justify-between mb-4 px-1">
             <div className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
               <Layers size={16} className="text-indigo-500" />
@@ -232,7 +199,6 @@ const EarthquakeList = () => {
               {loadingMore && <span className="text-xs text-brand-500 animate-pulse font-medium">• loading more...</span>}
             </div>
           </div>
-
           {loading && page === 1 ? (
             <div className="flex flex-col items-center justify-center py-24 gap-4">
               <div className="w-10 h-10 rounded-full border-4 border-brand-500/20 border-t-brand-500 animate-spin" />
@@ -256,7 +222,6 @@ const EarthquakeList = () => {
               })}
             </div>
           )}
-
           {loadingMore && (
             <div className="py-8 flex justify-center">
               <div className="w-6 h-6 rounded-full border-2 border-brand-500/30 border-t-brand-500 animate-spin" />
@@ -264,7 +229,6 @@ const EarthquakeList = () => {
           )}
         </div>
       </div>
-
       <AddEarthquakeModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
@@ -273,6 +237,4 @@ const EarthquakeList = () => {
     </div>
   );
 };
-
 export default EarthquakeList;
-

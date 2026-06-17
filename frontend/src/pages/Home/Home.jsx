@@ -4,15 +4,13 @@ import { earthquakeService } from '../../services/earthquakeService';
 import { Activity, Globe, Info } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-
 const Home = () => {
   const [earthquakes, setEarthquakes] = useState([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const fetchRecent = async () => {
       try {
-        const response = await earthquakeService.getRecentEarthquakes(500); // Fetch more for the full map
+        const response = await earthquakeService.getRecentEarthquakes(500); 
         setEarthquakes(response.data || response);
       } catch (error) {
         console.error('Error fetching recent earthquakes:', error);
@@ -22,14 +20,11 @@ const Home = () => {
     };
     fetchRecent();
   }, []);
-
   return (
     <div className="flex flex-col h-full animate-fade-in">
       <Helmet>
         <title>Live Map | QuakeVision</title>
       </Helmet>
-
-      {/* Header Area */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-4">
         <div>
           <h1 className="font-display text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -45,8 +40,6 @@ const Home = () => {
           </Link>
         </div>
       </div>
-
-      {/* Main Map Area */}
       <div className="flex-1 relative glass-panel rounded-2xl overflow-hidden flex flex-col min-h-[500px]">
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-4 bg-slate-50 dark:bg-[#09090b]/50">
@@ -58,8 +51,6 @@ const Home = () => {
              <EarthquakeMap initialEarthquakes={earthquakes} center={[22.9, 78.9]} zoom={4.5} />
           </div>
         )}
-        
-        {/* Floating Legend overlay */}
         <div className="absolute bottom-6 left-6 z-20 glass-panel p-4 rounded-xl shadow-2xl pointer-events-none">
           <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center gap-1">
             <Info size={12} /> Magnitude Legend
@@ -83,10 +74,8 @@ const Home = () => {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
 };
-
 export default Home;

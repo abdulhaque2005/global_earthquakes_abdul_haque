@@ -1,7 +1,6 @@
 import Earthquake from '../models/Earthquake.js';
 import analyticsService from '../services/analytics.service.js';
 import predictionService from '../services/prediction.service.js';
-
 export const getAnalyticsSummary = async (req, res, next) => {
   try {
     const [totalCount, magnitudeDist, riskZones, topCountries] = await Promise.all([
@@ -10,11 +9,9 @@ export const getAnalyticsSummary = async (req, res, next) => {
       analyticsService.getRiskZones(),
       analyticsService.getTopCountries(5),
     ]);
-
     const avgResult = await Earthquake.aggregate([
       { $group: { _id: null, avgMagnitude: { $avg: '$magnitude' }, avgDepth: { $avg: '$depth' }, maxMagnitude: { $max: '$magnitude' } } },
     ]);
-
     return res.status(200).json({
       success: true,
       data: {
@@ -29,14 +26,12 @@ export const getAnalyticsSummary = async (req, res, next) => {
     });
   } catch (error) { next(error); }
 };
-
 export const getMagnitudeAnalytics = async (req, res, next) => {
   try {
     const data = await analyticsService.getMagnitudeDistribution();
     return res.status(200).json({ success: true, data });
   } catch (error) { next(error); }
 };
-
 export const getCountryAnalytics = async (req, res, next) => {
   try {
     const limit = parseInt(req.query.limit, 10) || 10;
@@ -44,21 +39,18 @@ export const getCountryAnalytics = async (req, res, next) => {
     return res.status(200).json({ success: true, count: data.length, data });
   } catch (error) { next(error); }
 };
-
 export const getRiskZoneAnalytics = async (req, res, next) => {
   try {
     const data = await analyticsService.getRiskZones();
     return res.status(200).json({ success: true, data });
   } catch (error) { next(error); }
 };
-
 export const getYearlyTrends = async (req, res, next) => {
   try {
     const data = await analyticsService.getYearlyTrends();
     return res.status(200).json({ success: true, data });
   } catch (error) { next(error); }
 };
-
 export const getRegionalRiskPrediction = async (req, res, next) => {
   try {
     const { lat, lng, radius } = req.query;
@@ -69,21 +61,18 @@ export const getRegionalRiskPrediction = async (req, res, next) => {
     return res.status(200).json({ success: true, data });
   } catch (error) { next(error); }
 };
-
 export const analyzeHighestMagnitude = async (req, res, next) => {
   try {
     const data = await Earthquake.find().sort('-magnitude').limit(20).select('time place magnitude depth riskLevel');
     return res.status(200).json({ success: true, count: data.length, data });
   } catch (error) { next(error); }
 };
-
 export const analyzeDeepest = async (req, res, next) => {
   try {
     const data = await Earthquake.find().sort('-depth').limit(20).select('time place magnitude depth riskLevel');
     return res.status(200).json({ success: true, count: data.length, data });
   } catch (error) { next(error); }
 };
-
 export const analyzeRecentActivity = async (req, res, next) => {
   try {
     const since = new Date(); since.setDate(since.getDate() - 30);
@@ -95,7 +84,6 @@ export const analyzeRecentActivity = async (req, res, next) => {
     return res.status(200).json({ success: true, data });
   } catch (error) { next(error); }
 };
-
 export const analyzeLocations = async (req, res, next) => {
   try {
     const data = await Earthquake.aggregate([
@@ -106,7 +94,6 @@ export const analyzeLocations = async (req, res, next) => {
     return res.status(200).json({ success: true, count: data.length, data });
   } catch (error) { next(error); }
 };
-
 export const analyzeCountries = async (req, res, next) => {
   try {
     const data = await Earthquake.aggregate([
@@ -118,7 +105,6 @@ export const analyzeCountries = async (req, res, next) => {
     return res.status(200).json({ success: true, count: data.length, data });
   } catch (error) { next(error); }
 };
-
 export const analyzeNetworks = async (req, res, next) => {
   try {
     const data = await Earthquake.aggregate([
@@ -128,7 +114,6 @@ export const analyzeNetworks = async (req, res, next) => {
     return res.status(200).json({ success: true, count: data.length, data });
   } catch (error) { next(error); }
 };
-
 export const analyzeMagnitudes = async (req, res, next) => {
   try {
     const data = await Earthquake.aggregate([
@@ -137,7 +122,6 @@ export const analyzeMagnitudes = async (req, res, next) => {
     return res.status(200).json({ success: true, data });
   } catch (error) { next(error); }
 };
-
 export const analyzeDepths = async (req, res, next) => {
   try {
     const data = await Earthquake.aggregate([
@@ -146,7 +130,6 @@ export const analyzeDepths = async (req, res, next) => {
     return res.status(200).json({ success: true, data });
   } catch (error) { next(error); }
 };
-
 export const analyzeErrors = async (req, res, next) => {
   try {
     const data = await Earthquake.aggregate([
@@ -156,7 +139,6 @@ export const analyzeErrors = async (req, res, next) => {
     return res.status(200).json({ success: true, data: data[0] || {} });
   } catch (error) { next(error); }
 };
-
 export const analyzeMonthly = async (req, res, next) => {
   try {
     const data = await Earthquake.aggregate([

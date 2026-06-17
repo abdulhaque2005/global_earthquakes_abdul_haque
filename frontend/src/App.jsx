@@ -3,12 +3,9 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import 'react-toastify/dist/ReactToastify.css';
-
 import Sidebar from './components/Layout/Sidebar';
 import Header from './components/Layout/Header';
 import ProtectedRoute from './components/Common/ProtectedRoute';
-
-// Lazy loaded components for code splitting
 const Home = lazy(() => import('./pages/Home/Home'));
 const Login = lazy(() => import('./pages/Auth/Login'));
 const Register = lazy(() => import('./pages/Auth/Register'));
@@ -19,15 +16,11 @@ const Alerts = lazy(() => import('./pages/Alerts/Alerts'));
 const Reports = lazy(() => import('./pages/Reports/Reports'));
 const Search = lazy(() => import('./pages/Search/Search'));
 const Analytics = lazy(() => import('./pages/Analytics/Analytics'));
-
-// Admin features
 const AdminDashboard = lazy(() => import('./pages/Dashboard/AdminDashboard'));
 const UserManagement = lazy(() => import('./features/users/UserManagement'));
-
 function App() {
   const { theme } = useSelector((state) => state.ui);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   React.useEffect(() => {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
@@ -37,19 +30,13 @@ function App() {
       document.body.classList.remove('dark');
     }
   }, [theme]);
-
   return (
     <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-[#020817] transition-colors duration-500 relative">
-      
-      {/* Subtle ambient glow */}
       <div className="absolute top-[-20%] left-[-10%] w-[50vw] h-[50vw] bg-brand-500/5 rounded-full blur-[80px] pointer-events-none z-0"></div>
       <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] bg-indigo-500/5 rounded-full blur-[80px] pointer-events-none z-0"></div>
-
       <Sidebar mobileOpen={mobileMenuOpen} closeMobile={() => setMobileMenuOpen(false)} />
-      
       <div className="flex-1 flex flex-col md:ml-64 h-screen overflow-hidden">
         <Header toggleMobileMenu={() => setMobileMenuOpen(!mobileMenuOpen)} />
-        
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-transparent p-4 sm:p-6 lg:p-8 animate-fade-in relative z-10">
           <Suspense fallback={
             <div className="flex justify-center items-center h-full">
@@ -59,8 +46,6 @@ function App() {
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              
-              {/* Standard User Routes */}
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/dashboard" element={<Dashboard />} />
@@ -71,19 +56,15 @@ function App() {
                 <Route path="/search" element={<Search />} />
                 <Route path="/analytics" element={<Analytics />} />
               </Route>
-
-              {/* Admin Routes */}
               <Route element={<ProtectedRoute requiredRole="admin" />}>
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/users" element={<UserManagement />} />
               </Route>
-              
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>
         </main>
       </div>
-      
       <ToastContainer 
         theme={theme} 
         position="bottom-right" 
@@ -92,5 +73,4 @@ function App() {
     </div>
   );
 }
-
 export default App;

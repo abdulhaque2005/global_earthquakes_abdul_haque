@@ -3,12 +3,10 @@ import { SocketContext } from '../../context/SocketContext';
 import { AlertTriangle, Bell, Info, ShieldAlert } from 'lucide-react';
 import { earthquakeService } from '../../services/earthquakeService';
 import { Helmet } from 'react-helmet-async';
-
 const Alerts = () => {
   const socket = useContext(SocketContext);
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const fetchHighRisk = async () => {
       try {
@@ -25,30 +23,23 @@ const Alerts = () => {
     };
     fetchHighRisk();
   }, []);
-
   useEffect(() => {
     if (!socket) return;
-    
     socket.emit('subscribeToAlerts');
-
     socket.on('newEarthquake', (newEq) => {
       if (newEq.magnitude >= 4.5) {
         setAlerts((prev) => [newEq, ...prev]);
       }
     });
-
     return () => {
       socket.off('newEarthquake');
     };
   }, [socket]);
-
   return (
     <div className="w-full max-w-4xl mx-auto min-h-[80vh]">
       <Helmet>
         <title>Emergency Alerts | QuakeVision</title>
       </Helmet>
-
-      {/* Header Area */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 animate-slide-up">
         <div>
           <h1 className="font-display text-2xl md:text-3xl font-bold text-red-500 flex items-center gap-2">
@@ -64,7 +55,6 @@ const Alerts = () => {
           </div>
         </div>
       </div>
-      
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-4">
           <div className="w-10 h-10 rounded-full border-4 border-red-500/30 border-t-red-500 animate-spin" />
@@ -86,9 +76,7 @@ const Alerts = () => {
               className="relative pl-16 animate-slide-right"
               style={{ animationDelay: `${idx * 0.05}s` }}
             >
-              {/* Timeline dot */}
               <div className="absolute left-[18px] top-6 w-5 h-5 rounded-full bg-slate-50 dark:bg-surface-dark border-4 border-red-500 shadow-[0_0_10px_rgba(239,68,68,0.3)] z-10"></div>
-              
               <div className="card hover:border-red-500/30 transition-colors border border-transparent shadow-sm dark:shadow-none bg-white dark:bg-[#1a1c23]">
                 <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
                   <div>
@@ -107,7 +95,6 @@ const Alerts = () => {
                       <span>Depth: <strong className="text-slate-700 dark:text-slate-300">{alert.depth} km</strong></span>
                     </p>
                   </div>
-                  
                   <div className="p-3 bg-red-500/10 text-red-500 rounded-xl shrink-0 hidden sm:block">
                     <AlertTriangle size={28} />
                   </div>
@@ -120,5 +107,4 @@ const Alerts = () => {
     </div>
   );
 };
-
 export default Alerts;

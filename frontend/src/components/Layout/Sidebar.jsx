@@ -1,9 +1,9 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Home, Activity, Map, PieChart, Bell, FileText, Search, ShieldAlert } from 'lucide-react';
+import { Home, Activity, Map, PieChart, Bell, FileText, Search, ShieldAlert, X } from 'lucide-react';
 
-const Sidebar = () => {
+const Sidebar = ({ mobileOpen, closeMobile }) => {
   const { user } = useSelector((state) => state.auth);
   const location = useLocation();
 
@@ -21,9 +21,13 @@ const Sidebar = () => {
     navItems.push({ name: 'Admin', path: '/admin', icon: <ShieldAlert size={20} /> });
   }
 
-  return (
-    <aside className="w-64 hidden md:flex flex-col h-screen fixed left-0 top-0 border-r border-slate-200/50 dark:border-slate-800/50 bg-white/70 dark:bg-[#020617]/70 backdrop-blur-2xl z-40">
-      <div className="h-16 flex items-center px-6 border-b border-slate-200/50 dark:border-slate-800/50">
+  const handleNavClick = () => {
+    if (closeMobile) closeMobile();
+  };
+
+  const sidebarContent = (
+    <>
+      <div className="h-16 flex items-center justify-between px-6 border-b border-slate-200/50 dark:border-slate-800/50">
         <div className="flex items-center gap-3">
           <div className="bg-gradient-to-tr from-brand-600 via-brand-500 to-emerald-400 p-2 rounded-xl text-white shadow-lg shadow-brand-500/30">
             <Activity size={20} />
@@ -32,6 +36,13 @@ const Sidebar = () => {
             Quake<span className="text-brand-500">Vision</span>
           </span>
         </div>
+
+        <button
+          onClick={closeMobile}
+          className="md:hidden p-2 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
+        >
+          <X size={20} />
+        </button>
       </div>
 
       <div className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
@@ -44,6 +55,7 @@ const Sidebar = () => {
             <NavLink
               key={item.name}
               to={item.path}
+              onClick={handleNavClick}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 group relative overflow-hidden ${
                 isActive
                   ? 'text-brand-600 dark:text-brand-400 font-medium'
@@ -76,7 +88,31 @@ const Sidebar = () => {
           </div>
         </div>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+
+      <aside className="w-64 hidden md:flex flex-col h-screen fixed left-0 top-0 border-r border-slate-200/50 dark:border-slate-800/50 bg-white/70 dark:bg-[#020617]/70 backdrop-blur-2xl z-40">
+        {sidebarContent}
+      </aside>
+
+      {mobileOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity"
+          onClick={closeMobile}
+        />
+      )}
+
+      <aside
+        className={`md:hidden fixed top-0 left-0 h-full w-64 flex flex-col bg-white dark:bg-[#020817] border-r border-slate-200/50 dark:border-slate-800/50 z-50 transform transition-transform duration-300 ease-in-out ${
+          mobileOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        {sidebarContent}
+      </aside>
+    </>
   );
 };
 

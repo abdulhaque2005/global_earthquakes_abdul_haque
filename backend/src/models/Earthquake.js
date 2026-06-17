@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-
 const earthquakeSchema = new mongoose.Schema(
   {
     time: {
@@ -120,14 +119,12 @@ const earthquakeSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
 earthquakeSchema.index({ location: '2dsphere' });
 earthquakeSchema.index({ magnitude: -1, time: -1 });
 earthquakeSchema.index({ depth: -1 });
 earthquakeSchema.index({ net: 1, status: 1 });
 earthquakeSchema.index({ place: 'text' });
-
-earthquakeSchema.pre('save', function (next) {
+earthquakeSchema.pre('validate', function (next) {
   if (this.longitude !== undefined && this.latitude !== undefined) {
     this.location = {
       type: 'Point',
@@ -136,7 +133,5 @@ earthquakeSchema.pre('save', function (next) {
   }
   next();
 });
-
 const Earthquake = mongoose.model('Earthquake', earthquakeSchema);
-
 export default Earthquake;

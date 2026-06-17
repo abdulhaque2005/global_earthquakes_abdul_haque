@@ -3,7 +3,6 @@ import { reportService } from '../../services/reportService';
 import { MessageSquare, MapPin, AlertCircle, Send, CheckCircle, Zap } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { Helmet } from 'react-helmet-async';
-
 const intensityLabel = (val) => {
   if (val <= 2) return { text: 'Very Weak', color: 'text-emerald-500', bg: 'bg-emerald-500' };
   if (val <= 4) return { text: 'Light', color: 'text-lime-500', bg: 'bg-lime-500' };
@@ -11,15 +10,12 @@ const intensityLabel = (val) => {
   if (val <= 8) return { text: 'Strong', color: 'text-orange-500', bg: 'bg-orange-500' };
   return { text: 'Severe', color: 'text-red-500', bg: 'bg-red-500' };
 };
-
 const inputCls = "w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/40 focus:border-brand-500 transition-all";
-
 const Reports = () => {
   const [formData, setFormData] = useState({ location: '', intensity: 5, description: '' });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const lbl = intensityLabel(formData.intensity);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.location.trim() || !formData.description.trim()) {
@@ -39,14 +35,11 @@ const Reports = () => {
       setLoading(false);
     }
   };
-
   return (
     <div className="w-full max-w-2xl mx-auto py-8 flex flex-col gap-8">
       <Helmet>
         <title>Report | QuakeVision</title>
       </Helmet>
-
-      {/* Header */}
       <div className="text-center">
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 mb-4">
           <MessageSquare size={26} className="text-indigo-500" />
@@ -58,12 +51,8 @@ const Reports = () => {
           Community reports help assess earthquake impact. Share your experience to improve seismic monitoring.
         </p>
       </div>
-
-      {/* Card */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
-        {/* Top accent */}
         <div className="h-1 w-full bg-gradient-to-r from-brand-500 via-indigo-500 to-purple-500" />
-
         {success ? (
           <div className="flex flex-col items-center justify-center py-16 px-8 text-center">
             <div className="w-20 h-20 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center mb-5">
@@ -82,8 +71,6 @@ const Reports = () => {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
-
-            {/* Location */}
             <div>
               <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                 <MapPin size={15} className="text-brand-500" /> Location / City
@@ -98,14 +85,10 @@ const Reports = () => {
                 required
               />
             </div>
-
-            {/* Intensity Slider */}
             <div>
               <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
                 <Zap size={15} className="text-amber-500" /> Shaking Intensity (1–10)
               </label>
-
-              {/* Value pill */}
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs text-slate-400">1 – Barely felt</span>
                 <div className={`flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold
@@ -121,7 +104,6 @@ const Reports = () => {
                 </div>
                 <span className="text-xs text-slate-400">10 – Extreme</span>
               </div>
-
               <input
                 type="range"
                 min="1" max="10"
@@ -129,8 +111,6 @@ const Reports = () => {
                 onChange={e => setFormData({ ...formData, intensity: parseInt(e.target.value) })}
                 className="w-full h-2 rounded-full cursor-pointer accent-brand-500 bg-slate-200 dark:bg-slate-700"
               />
-
-              {/* Tick marks */}
               <div className="flex justify-between mt-1.5 px-0.5">
                 {[1,2,3,4,5,6,7,8,9,10].map(n => (
                   <span key={n} className={`text-[10px] font-medium ${n === formData.intensity ? 'text-brand-500' : 'text-slate-400'}`}>
@@ -139,8 +119,6 @@ const Reports = () => {
                 ))}
               </div>
             </div>
-
-            {/* Description */}
             <div>
               <label className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                 <MessageSquare size={15} className="text-indigo-500" /> Description of Experience
@@ -155,8 +133,6 @@ const Reports = () => {
               />
               <p className="text-xs text-slate-400 mt-1.5 ml-1">{formData.description.length} characters</p>
             </div>
-
-            {/* Submit */}
             <div className="pt-2">
               <button
                 type="submit"
@@ -176,12 +152,9 @@ const Reports = () => {
                 )}
               </button>
             </div>
-
           </form>
         )}
       </div>
-
-      {/* Disclaimer */}
       <p className="text-center text-xs text-slate-400 dark:text-slate-600 leading-relaxed">
         Reports are anonymized and contribute to community seismic impact assessment.
         Data is processed within our global monitoring network.
@@ -189,5 +162,4 @@ const Reports = () => {
     </div>
   );
 };
-
 export default Reports;

@@ -4,10 +4,8 @@ import getPaginationMeta from '../utils/pagination.js';
 import calculateRiskDetails from '../utils/riskCalculator.js';
 import alertService from '../services/alert.service.js';
 import mapService from '../services/map.service.js';
-
 export const getEarthquakes = async (req, res, next) => {
   try {
-
     if (req.query.lat && req.query.lng) {
       const radius = parseFloat(req.query.radius) || 500;
       const limit = parseInt(req.query.limit, 10) || 100;
@@ -16,7 +14,6 @@ export const getEarthquakes = async (req, res, next) => {
       );
       return res.status(200).json({ success: true, count: data.length, queryType: 'Geospatial Radius', data });
     }
-
     if (req.query.swLng && req.query.swLat && req.query.neLng && req.query.neLat) {
       const limit = parseInt(req.query.limit, 10) || 200;
       const data = await mapService.getEarthquakesInBoundingBox(
@@ -25,16 +22,13 @@ export const getEarthquakes = async (req, res, next) => {
       );
       return res.status(200).json({ success: true, count: data.length, queryType: 'Geospatial Bounding Box', data });
     }
-
     const extraFilter = {};
-
     if (req.query.country) extraFilter.place = new RegExp(req.query.country, 'i');
     if (req.query.place) extraFilter.place = new RegExp(req.query.place, 'i');
     if (req.query.status) extraFilter.status = req.query.status;
     if (req.query.magType) extraFilter.magType = req.query.magType;
     if (req.query.network) extraFilter.net = req.query.network;
     if (req.query.type) extraFilter.type = req.query.type;
-
     if (req.query.minMagnitude || req.query.maxMagnitude) {
       extraFilter.magnitude = {};
       if (req.query.minMagnitude) extraFilter.magnitude.$gte = parseFloat(req.query.minMagnitude);
@@ -55,25 +49,19 @@ export const getEarthquakes = async (req, res, next) => {
       const m = parseInt(req.query.month, 10);
       extraFilter.$expr = { $eq: [{ $month: '$time' }, m] };
     }
-
     const baseQuery = Earthquake.find(extraFilter);
     const features = new ApiFeatures(baseQuery, req.query).search().filter().sort().limitFields();
-
     const countBase = Earthquake.find(extraFilter);
     const countFeatures = new ApiFeatures(countBase, req.query).search().filter();
     const totalDocs = await countFeatures.query.countDocuments();
-
     features.paginate();
     const earthquakes = await features.query;
-
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 20;
     const pagination = getPaginationMeta(totalDocs, page, limit);
-
     return res.status(200).json({ success: true, count: earthquakes.length, pagination, data: earthquakes });
   } catch (error) { next(error); }
 };
-
 export const getEarthquakeById = async (req, res, next) => {
   try {
     const earthquake = await Earthquake.findById(req.params.id);
@@ -81,7 +69,6 @@ export const getEarthquakeById = async (req, res, next) => {
     return res.status(200).json({ success: true, data: earthquake });
   } catch (error) { next(error); }
 };
-
 export const createEarthquake = async (req, res, next) => {
   try {
     const payload = { ...req.body };
@@ -94,7 +81,6 @@ export const createEarthquake = async (req, res, next) => {
     return res.status(201).json({ success: true, data: earthquake });
   } catch (error) { next(error); }
 };
-
 export const replaceEarthquake = async (req, res, next) => {
   try {
     const payload = { ...req.body };
@@ -108,7 +94,6 @@ export const replaceEarthquake = async (req, res, next) => {
     return res.status(200).json({ success: true, data: earthquake });
   } catch (error) { next(error); }
 };
-
 export const updateEarthquake = async (req, res, next) => {
   try {
     let earthquake = await Earthquake.findById(req.params.id);
@@ -122,7 +107,6 @@ export const updateEarthquake = async (req, res, next) => {
     return res.status(200).json({ success: true, data: earthquake });
   } catch (error) { next(error); }
 };
-
 export const deleteEarthquake = async (req, res, next) => {
   try {
     const earthquake = await Earthquake.findByIdAndDelete(req.params.id);
@@ -130,14 +114,12 @@ export const deleteEarthquake = async (req, res, next) => {
     return res.status(200).json({ success: true, data: {}, message: 'Earthquake record deleted.' });
   } catch (error) { next(error); }
 };
-
 export const checkEarthquakeExists = async (req, res, next) => {
   try {
     const exists = await Earthquake.exists({ _id: req.params.id });
     return res.status(200).json({ success: true, exists: !!exists });
   } catch (error) { next(error); }
 };
-
 export const bulkCreate = async (req, res, next) => {
   try {
     const records = req.body;
@@ -154,7 +136,6 @@ export const bulkCreate = async (req, res, next) => {
     return res.status(201).json({ success: true, count: result.length, data: result });
   } catch (error) { next(error); }
 };
-
 export const bulkUpdate = async (req, res, next) => {
   try {
     const { filter, update } = req.body;
@@ -163,7 +144,6 @@ export const bulkUpdate = async (req, res, next) => {
     return res.status(200).json({ success: true, modifiedCount: result.modifiedCount });
   } catch (error) { next(error); }
 };
-
 export const bulkDelete = async (req, res, next) => {
   try {
     const { ids } = req.body;
@@ -173,7 +153,6 @@ export const bulkDelete = async (req, res, next) => {
     return res.status(200).json({ success: true, deletedCount: result.deletedCount });
   } catch (error) { next(error); }
 };
-
 const paginatedFind = async (req, res, next, filter, label) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
@@ -187,107 +166,82 @@ const paginatedFind = async (req, res, next, filter, label) => {
     });
   } catch (error) { next(error); }
 };
-
 export const getByPlace = (req, res, next) =>
   paginatedFind(req, res, next, { place: new RegExp(req.params.place, 'i') });
-
 export const getByCountry = (req, res, next) =>
   paginatedFind(req, res, next, { place: new RegExp(req.params.country, 'i') });
-
 export const getByType = (req, res, next) =>
   paginatedFind(req, res, next, { type: req.params.type });
-
 export const getByStatus = (req, res, next) =>
   paginatedFind(req, res, next, { status: req.params.status });
-
 export const getByMagType = (req, res, next) =>
   paginatedFind(req, res, next, { magType: req.params.magType });
-
 export const getByNetwork = (req, res, next) =>
   paginatedFind(req, res, next, { net: req.params.net });
-
 export const getByMagnitude = (req, res, next) => {
   const mag = parseFloat(req.params.mag);
   if (isNaN(mag)) return res.status(400).json({ success: false, error: 'Invalid magnitude value.' });
   return paginatedFind(req, res, next, { magnitude: { $gte: mag, $lt: mag + 0.5 } });
 };
-
 export const getByDepth = (req, res, next) => {
   const d = parseFloat(req.params.depth);
   if (isNaN(d)) return res.status(400).json({ success: false, error: 'Invalid depth value.' });
   return paginatedFind(req, res, next, { depth: { $gte: d - 10, $lte: d + 10 } });
 };
-
 export const getByDate = (req, res, next) => {
   const d = new Date(req.params.date);
   if (isNaN(d.getTime())) return res.status(400).json({ success: false, error: 'Invalid date format.' });
   const nextDay = new Date(d); nextDay.setDate(nextDay.getDate() + 1);
   return paginatedFind(req, res, next, { time: { $gte: d, $lt: nextDay } });
 };
-
 export const getByYear = (req, res, next) => {
   const y = parseInt(req.params.year, 10);
   if (isNaN(y)) return res.status(400).json({ success: false, error: 'Invalid year.' });
   return paginatedFind(req, res, next, { time: { $gte: new Date(`${y}-01-01`), $lt: new Date(`${y + 1}-01-01`) } });
 };
-
 export const getByMonth = (req, res, next) => {
   const m = parseInt(req.params.month, 10);
   if (isNaN(m) || m < 1 || m > 12) return res.status(400).json({ success: false, error: 'Invalid month (1-12).' });
   return paginatedFind(req, res, next, { $expr: { $eq: [{ $month: '$time' }, m] } });
 };
-
 export const getHighMagnitude = (req, res, next) =>
   paginatedFind(req, res, next, { magnitude: { $gte: 6.0 } });
-
 export const getLowMagnitude = (req, res, next) =>
   paginatedFind(req, res, next, { magnitude: { $lt: 5.0 } });
-
 export const getDeep = (req, res, next) =>
   paginatedFind(req, res, next, { depth: { $gte: 300 } });
-
 export const getShallow = (req, res, next) =>
   paginatedFind(req, res, next, { depth: { $lte: 70 } });
-
 export const getRecent = (req, res, next) => {
   const since = new Date(); since.setDate(since.getDate() - 30);
   return paginatedFind(req, res, next, { time: { $gte: since } });
 };
-
 export const getReviewed = (req, res, next) =>
   paginatedFind(req, res, next, { status: 'reviewed' });
-
 export const getHighGap = (req, res, next) =>
   paginatedFind(req, res, next, { gap: { $gte: 180 } });
-
 export const getHighRms = (req, res, next) =>
   paginatedFind(req, res, next, { rms: { $gte: 1.0 } });
-
 export const getOceanic = (req, res, next) =>
   paginatedFind(req, res, next, {
     place: { $regex: /ridge|rise|ocean|sea\b|mid-atlantic|pacific/i },
   });
-
 export const getCritical = (req, res, next) =>
   paginatedFind(req, res, next, { riskLevel: 'Critical' });
-
 export const sortByMagnitudeDesc = async (req, res, next) => {
   req.query.sort = '-magnitude';
   return getEarthquakes(req, res, next);
 };
-
 export const sortByTimeDesc = async (req, res, next) => {
   req.query.sort = '-time';
   return getEarthquakes(req, res, next);
 };
-
 export const getRandomEarthquake = async (req, res, next) => {
   try {
     const data = await Earthquake.aggregate([{ $sample: { size: 1 } }]);
     return res.status(200).json({ success: true, data: data[0] || null });
   } catch (error) { next(error); }
 };
-
 export const importJson = async (req, res, next) => {
   try {
     const records = req.body;

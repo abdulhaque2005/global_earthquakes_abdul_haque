@@ -1,7 +1,8 @@
 import User from '../models/User.js';
 import generateToken from '../utils/generateToken.js';
 import jwt from 'jsonwebtoken';
-
+import { OAuth2Client } from 'google-auth-library';
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 export const register = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
@@ -15,7 +16,6 @@ export const register = async (req, res, next) => {
     });
   } catch (error) { next(error); }
 };
-
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -27,17 +27,52 @@ export const login = async (req, res, next) => {
     const token = generateToken(user._id);
     return res.status(200).json({
       success: true, token,
-      data: { id: user._id, name: user.name, email: user.email, role: user.role },
+      data: { id: user._id, name: user.name, email: user.email, role: user.role, avatar: user.avatar },
     });
   } catch (error) { next(error); }
 };
-
+export const googleLogin = async (req, res, next) => {
+  try {
+    const { credential } = req.body;
+    if (!credential) return res.status(400).json({ success: false, error: 'Provide Google credential.' });
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    const { sub: googleId, email, name, picture: avatar } = payload;
+    let user = await User.findOne({ email });
+    if (user) {
+      if (!user.googleId) {
+        user.googleId = googleId;
+        user.avatar = avatar;
+        user.authProvider = 'google';
+        await user.save();
+      }
+    } else {
+      user = await User.create({
+        name,
+        email,
+        googleId,
+        avatar,
+        authProvider: 'google',
+      });
+    }
+    const token = generateToken(user._id);
+    return res.status(200).json({
+      success: true, token,
+      data: { id: user._id, name: user.name, email: user.email, role: user.role, avatar: user.avatar },
+    });
+  } catch (error) {
+    console.error('Google Auth Error:', error);
+    return res.status(401).json({ success: false, error: 'Invalid Google credential.' });
+  }
+};
 export const logout = async (req, res, next) => {
   try {
     return res.status(200).json({ success: true, message: 'Logged out successfully.', token: null });
   } catch (error) { next(error); }
 };
-
 export const getProfile = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
@@ -45,7 +80,6 @@ export const getProfile = async (req, res, next) => {
     return res.status(200).json({ success: true, data: user });
   } catch (error) { next(error); }
 };
-
 export const updateProfile = async (req, res, next) => {
   try {
     const updates = { name: req.body.name, email: req.body.email };
@@ -55,7 +89,6 @@ export const updateProfile = async (req, res, next) => {
     return res.status(200).json({ success: true, data: user });
   } catch (error) { next(error); }
 };
-
 export const changePassword = async (req, res, next) => {
   try {
     const { currentPassword, newPassword } = req.body;
@@ -70,7 +103,6 @@ export const changePassword = async (req, res, next) => {
     return res.status(200).json({ success: true, token, message: 'Password changed successfully.' });
   } catch (error) { next(error); }
 };
-
 export const forgotPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
@@ -81,7 +113,6 @@ export const forgotPassword = async (req, res, next) => {
     return res.status(200).json({ success: true, message: 'Password reset token generated.', resetToken });
   } catch (error) { next(error); }
 };
-
 export const resetPassword = async (req, res, next) => {
   try {
     const { resetToken, newPassword } = req.body;
@@ -98,7 +129,6 @@ export const resetPassword = async (req, res, next) => {
     next(error);
   }
 };
-
 export const verifyEmail = async (req, res, next) => {
   try {
     const { email } = req.body;
@@ -108,7 +138,6 @@ export const verifyEmail = async (req, res, next) => {
     return res.status(200).json({ success: true, message: 'Email verified successfully.', verified: true });
   } catch (error) { next(error); }
 };
-
 export const sendOtp = async (req, res, next) => {
   try {
     const { email } = req.body;
@@ -117,7 +146,6 @@ export const sendOtp = async (req, res, next) => {
     return res.status(200).json({ success: true, message: 'OTP sent successfully.', otp });
   } catch (error) { next(error); }
 };
-
 export const generateJwtToken = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -130,7 +158,6 @@ export const generateJwtToken = async (req, res, next) => {
     return res.status(200).json({ success: true, token });
   } catch (error) { next(error); }
 };
-
 export const verifyJwtToken = async (req, res, next) => {
   try {
     const { token } = req.body;
@@ -141,7 +168,6 @@ export const verifyJwtToken = async (req, res, next) => {
     return res.status(401).json({ success: false, valid: false, error: 'Invalid or expired token.' });
   }
 };
-
 export const refreshJwtToken = async (req, res, next) => {
   try {
     const { token } = req.body;
@@ -153,7 +179,6 @@ export const refreshJwtToken = async (req, res, next) => {
     return res.status(401).json({ success: false, error: 'Invalid token.' });
   }
 };
-
 export const revokeJwtToken = async (req, res, next) => {
   try {
     return res.status(200).json({ success: true, message: 'Token revoked. Client should discard the token.' });

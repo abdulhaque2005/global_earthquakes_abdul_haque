@@ -4,7 +4,6 @@ import { Activity, AlertTriangle, MapPin, Database, TrendingUp, Maximize2, Globe
 import { Helmet } from 'react-helmet-async';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import { Link } from 'react-router-dom';
-
 const StatCard = ({ label, value, unit, icon, colorClass, bgClass, trend, delay }) => (
   <div
     className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:border-brand-500/40 dark:hover:border-brand-500/40 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-500/5 transition-all duration-300 animate-fade-in opacity-0"
@@ -23,14 +22,12 @@ const StatCard = ({ label, value, unit, icon, colorClass, bgClass, trend, delay 
     {trend && <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 font-medium">{trend}</p>}
   </div>
 );
-
 const Dashboard = () => {
   const [summary, setSummary] = useState(null);
   const [highestMag, setHighestMag] = useState(null);
   const [deepest, setDeepest] = useState(null);
   const [yearlyTrends, setYearlyTrends] = useState([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -52,7 +49,6 @@ const Dashboard = () => {
     };
     fetchDashboardData();
   }, []);
-
   if (loading) {
     return (
       <div className="flex flex-col justify-center items-center h-[70vh] gap-4">
@@ -61,7 +57,6 @@ const Dashboard = () => {
       </div>
     );
   }
-
   const statCards = [
     {
       label: 'Total Records',
@@ -102,14 +97,11 @@ const Dashboard = () => {
       delay: '300ms',
     },
   ];
-
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6">
       <Helmet>
         <title>Overview | QuakeVision</title>
       </Helmet>
-
-      {/* Header */}
       <div
         className="flex flex-col md:flex-row md:items-end justify-between gap-4 animate-fade-in opacity-0"
         style={{ animationFillMode: 'forwards' }}
@@ -130,17 +122,12 @@ const Dashboard = () => {
           <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">Live Data Feed</span>
         </div>
       </div>
-
-      {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
         {statCards.map((card, i) => (
           <StatCard key={i} {...card} />
         ))}
       </div>
-
-      {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {/* Frequency Timeline */}
         <div
           className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 lg:col-span-2 animate-fade-in opacity-0"
           style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}
@@ -181,8 +168,6 @@ const Dashboard = () => {
             )}
           </div>
         </div>
-
-        {/* Severity Distribution */}
         <div
           className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 animate-fade-in opacity-0"
           style={{ animationDelay: '500ms', animationFillMode: 'forwards' }}
@@ -211,8 +196,6 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-
-      {/* Notable Events Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {highestMag && (
           <div
@@ -245,7 +228,6 @@ const Dashboard = () => {
             </div>
           </div>
         )}
-
         {deepest && (
           <div
             className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 hover:border-indigo-500/30 transition-all duration-300 animate-fade-in opacity-0"
@@ -281,6 +263,4 @@ const Dashboard = () => {
     </div>
   );
 };
-
 export default Dashboard;
-

@@ -1,5 +1,4 @@
 import api from './api';
-
 export const earthquakeService = {
   getEarthquakes: async (params = {}) => {
     try {
@@ -16,7 +15,6 @@ export const earthquakeService = {
       throw error;
     }
   },
-
   createEarthquake: async (data) => {
     try {
       const response = await api.post('/earthquakes', data);
@@ -26,11 +24,9 @@ export const earthquakeService = {
       throw error;
     }
   },
-
   getRecentEarthquakes: async (limit = 100) => {
     return earthquakeService.getEarthquakes({ limit, sort: '-time' });
   },
-  
   getEarthquakeById: async (id) => {
     try {
       const response = await api.get(`/earthquakes/${id}`);
@@ -40,7 +36,6 @@ export const earthquakeService = {
       throw error;
     }
   },
-
   getNearby: async (lat, lng, radius = 500, limit = 20) => {
     try {
       const response = await api.get(`/earthquakes?lat=${lat}&lng=${lng}&radius=${radius}&limit=${limit}`);
