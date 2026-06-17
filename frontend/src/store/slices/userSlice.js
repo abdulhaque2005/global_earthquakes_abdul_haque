@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { adminService } from '../../services/adminService';
 import { toast } from 'react-toastify';
-
 export const fetchUsers = createAsyncThunk('users/fetchUsers', async (_, { rejectWithValue }) => {
   try {
     const res = await adminService.getAllUsers();
@@ -10,7 +9,6 @@ export const fetchUsers = createAsyncThunk('users/fetchUsers', async (_, { rejec
     return rejectWithValue(error.response?.data?.error || 'Failed to fetch users');
   }
 });
-
 export const updateUserRole = createAsyncThunk('users/updateUserRole', async ({ id, role }, { rejectWithValue }) => {
   try {
     const res = await adminService.updateUserRole(id, role);
@@ -19,7 +17,6 @@ export const updateUserRole = createAsyncThunk('users/updateUserRole', async ({ 
     return rejectWithValue(error.response?.data?.error || 'Failed to update user role');
   }
 });
-
 export const deleteUser = createAsyncThunk('users/deleteUser', async (id, { rejectWithValue }) => {
   try {
     await adminService.deleteUser(id);
@@ -28,13 +25,11 @@ export const deleteUser = createAsyncThunk('users/deleteUser', async (id, { reje
     return rejectWithValue(error.response?.data?.error || 'Failed to delete user');
   }
 });
-
 const initialState = {
   usersList: [],
   loading: false,
   error: null,
 };
-
 const userSlice = createSlice({
   name: 'users',
   initialState,
@@ -65,5 +60,4 @@ const userSlice = createSlice({
       });
   },
 });
-
 export default userSlice.reducer;

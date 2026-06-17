@@ -1,5 +1,4 @@
 import api from './api';
-
 export const alertService = {
   getAlerts: async () => {
     try {
@@ -10,7 +9,6 @@ export const alertService = {
       throw error;
     }
   },
-  
   createAlert: async (data) => {
     try {
       const response = await api.post('/alerts/create', data);

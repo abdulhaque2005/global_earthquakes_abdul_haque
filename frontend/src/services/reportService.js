@@ -1,5 +1,4 @@
 import api from './api';
-
 export const reportService = {
   getReports: async () => {
     try {
@@ -10,7 +9,6 @@ export const reportService = {
       throw error;
     }
   },
-  
   createReport: async (data) => {
     try {
       const response = await api.post('/reports', data);
@@ -20,7 +18,6 @@ export const reportService = {
       throw error;
     }
   },
-
   deleteReport: async (id) => {
     try {
       const response = await api.delete(`/reports/${id}`);

@@ -1,4 +1,3 @@
-/** @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./index.html",
@@ -18,7 +17,7 @@ export default {
           200: '#99f6e4',
           300: '#5eead4',
           400: '#2dd4bf',
-          500: '#14b8a6', // Teal base for a geographic/earth feel
+          500: '#14b8a6', 
           600: '#0d9488',
           700: '#0f766e',
           800: '#115e59',
@@ -27,14 +26,14 @@ export default {
         },
         surface: {
           light: '#ffffff',
-          dark: '#09090b', // Zinc 950
+          dark: '#09090b', 
           glass: 'rgba(9, 9, 11, 0.7)',
         },
         mag: {
-          low: '#2dd4bf', // Teal 400
-          med: '#fbbf24', // Amber 400
-          high: '#ef4444', // Red 500
-          extreme: '#7f1d1d', // Red 900
+          low: '#2dd4bf', 
+          med: '#fbbf24', 
+          high: '#ef4444', 
+          extreme: '#7f1d1d', 
         }
       },
       animation: {
@@ -42,6 +41,9 @@ export default {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'fade-in': 'fadeIn 0.5s ease-out forwards',
         'slide-up': 'slideUp 0.4s ease-out forwards',
+        'slide-right': 'slideRight 0.4s ease-out forwards',
+        'slide-down': 'slideDown 0.3s ease-out forwards',
+        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
         'blob': 'blob 7s infinite',
       },
       keyframes: {
@@ -52,6 +54,18 @@ export default {
         slideUp: {
           '0%': { opacity: '0', transform: 'translateY(20px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        slideRight: {
+          '0%': { opacity: '0', transform: 'translateX(-20px)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+        slideDown: {
+          '0%': { opacity: '0', transform: 'translateY(-10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        pulseGlow: {
+          '0%, 100%': { boxShadow: '0 0 20px rgba(20, 184, 166, 0.3)' },
+          '50%': { boxShadow: '0 0 40px rgba(20, 184, 166, 0.5)' },
         },
         blob: {
           '0%': { transform: 'translate(0px, 0px) scale(1)' },

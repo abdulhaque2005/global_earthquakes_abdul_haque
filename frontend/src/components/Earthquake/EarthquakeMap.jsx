@@ -4,36 +4,28 @@ import L from 'leaflet';
 import 'leaflet.heat';
 import { SocketContext } from '../../context/SocketContext';
 import { Search, MapPin } from 'lucide-react';
-
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-
 let DefaultIcon = L.icon({
     iconUrl: icon,
     shadowUrl: iconShadow,
     iconSize: [25, 41],
     iconAnchor: [12, 41]
 });
-
 L.Marker.prototype.options.icon = DefaultIcon;
-
 const getMarkerColor = (magnitude) => {
   if (magnitude >= 6) return '#ef4444';
   if (magnitude >= 4.5) return '#f59e0b';
   if (magnitude >= 2.5) return '#eab308';
   return '#10b981';
 };
-
 const getMarkerRadius = (magnitude) => {
   return Math.max(magnitude * 2.5, 5); 
 };
-
-// Premium Search Header Component
 const MapSearchHeader = ({ mapInstance }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!query.trim()) return;
@@ -48,7 +40,6 @@ const MapSearchHeader = ({ mapInstance }) => {
       setIsSearching(false);
     }
   };
-
   const jumpToLocation = (lat, lon) => {
     if (mapInstance) {
       mapInstance.flyTo([lat, lon], 13, { duration: 1.5 });
@@ -56,7 +47,6 @@ const MapSearchHeader = ({ mapInstance }) => {
     setResults([]);
     setQuery('');
   };
-
   return (
     <div className="relative w-full mb-6" style={{ zIndex: 9999 }}>
       <form onSubmit={handleSearch} className="flex items-center gap-3">
@@ -85,7 +75,6 @@ const MapSearchHeader = ({ mapInstance }) => {
           <span className="hidden sm:inline">Search Area</span>
         </button>
       </form>
-
       {results.length > 0 && (
         <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-[#1e293b] rounded-2xl shadow-2xl overflow-hidden z-50 max-h-80 overflow-y-auto">
           {results.map((r, i) => (
@@ -108,15 +97,12 @@ const MapSearchHeader = ({ mapInstance }) => {
     </div>
   );
 };
-
 // Heatmap Layer Component
 const HeatmapLayer = ({ data }) => {
   const map = useMap();
   const heatLayerRef = useRef(null);
-
   useEffect(() => {
     if (!map) return;
-    
     // Extract valid lat, lng, and intensity (magnitude)
     const heatData = data
       .filter(eq => eq.latitude != null || eq.location?.coordinates)
@@ -125,11 +111,9 @@ const HeatmapLayer = ({ data }) => {
         eq.longitude || eq.location.coordinates[0],
         eq.magnitude || 1 // intensity
       ]);
-
     if (heatLayerRef.current) {
       map.removeLayer(heatLayerRef.current);
     }
-
     heatLayerRef.current = L.heatLayer(heatData, {
       radius: 25,
       blur: 15,
@@ -143,45 +127,35 @@ const HeatmapLayer = ({ data }) => {
         1.0: 'red'
       }
     }).addTo(map);
-
     return () => {
       if (heatLayerRef.current && map) {
         map.removeLayer(heatLayerRef.current);
       }
     };
   }, [map, data]);
-
   return null;
 };
-
 const EarthquakeMap = ({ initialEarthquakes = [], center = [20, 0], zoom = 2.5 }) => {
   const socket = useContext(SocketContext);
   const [earthquakes, setEarthquakes] = useState(initialEarthquakes);
   const [showHeatmap, setShowHeatmap] = useState(false);
   const [mapInstance, setMapInstance] = useState(null);
-
   useEffect(() => {
     setEarthquakes(initialEarthquakes);
   }, [initialEarthquakes]);
-
   useEffect(() => {
     if (!socket) return;
-
     socket.on('newEarthquake', (newEq) => {
       setEarthquakes((prev) => [newEq, ...prev]);
     });
-
     return () => {
       socket.off('newEarthquake');
     };
   }, [socket]);
-
   return (
     <div className="flex flex-col w-full h-full">
       <MapSearchHeader mapInstance={mapInstance} />
-
       <div style={{ position: 'relative', height: '600px', width: '100%', borderRadius: '16px', overflow: 'hidden', border: '1px solid var(--glass-border)', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
-      {/* Toggle Button */}
       <div style={{ position: 'absolute', top: '15px', right: '15px', zIndex: 1000 }}>
         <button 
           onClick={() => setShowHeatmap(!showHeatmap)}
@@ -194,7 +168,6 @@ const EarthquakeMap = ({ initialEarthquakes = [], center = [20, 0], zoom = 2.5 }
           {showHeatmap ? 'Show Markers' : 'Show Heatmap'}
         </button>
       </div>
-
       <MapContainer 
         ref={setMapInstance}
         key={`${center[0]}-${center[1]}`} 
@@ -226,16 +199,13 @@ const EarthquakeMap = ({ initialEarthquakes = [], center = [20, 0], zoom = 2.5 }
              />
           </LayersControl.BaseLayer>
         </LayersControl>
-        
         {showHeatmap ? (
           <HeatmapLayer data={earthquakes} />
         ) : (
           earthquakes.map((eq) => {
             const lat = eq.latitude || eq.location?.coordinates[1];
             const lng = eq.longitude || eq.location?.coordinates[0];
-            
             if (!lat || !lng) return null;
-
             return (
               <CircleMarker
                 key={eq._id || eq.id}
@@ -276,5 +246,4 @@ const EarthquakeMap = ({ initialEarthquakes = [], center = [20, 0], zoom = 2.5 }
   </div>
   );
 };
-
 export default EarthquakeMap;

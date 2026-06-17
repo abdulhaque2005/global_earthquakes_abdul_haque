@@ -1,5 +1,4 @@
 import { body } from 'express-validator';
-
 export const registerValidation = [
   body('name')
     .trim()
@@ -20,7 +19,6 @@ export const registerValidation = [
     .isLength({ min: 6 })
     .withMessage('Security constraint: Password must consist of at least 6 characters.'),
 ];
-
 export const loginValidation = [
   body('email')
     .trim()

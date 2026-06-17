@@ -1,10 +1,8 @@
 class ApiFeatures {
-
   constructor(query, queryString) {
     this.query = query;
     this.queryString = queryString;
   }
-
   search() {
     if (this.queryString.search) {
       const searchRegex = new RegExp(this.queryString.search, 'i');
@@ -12,16 +10,13 @@ class ApiFeatures {
     }
     return this;
   }
-
   filter() {
     const queryObj = { ...this.queryString };
     const excludedFields = ['page', 'sort', 'limit', 'fields', 'search', 'startDate', 'endDate'];
     excludedFields.forEach((el) => delete queryObj[el]);
-
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
     const parsedQuery = JSON.parse(queryStr);
-
     if (this.queryString.startDate || this.queryString.endDate) {
       parsedQuery.time = {};
       if (this.queryString.startDate) {
@@ -31,22 +26,18 @@ class ApiFeatures {
         parsedQuery.time.$lte = new Date(this.queryString.endDate);
       }
     }
-
     this.query = this.query.find(parsedQuery);
     return this;
   }
-
   sort() {
     if (this.queryString.sort) {
       const sortBy = this.queryString.sort.split(',').join(' ');
       this.query = this.query.sort(sortBy);
     } else {
-
       this.query = this.query.sort('-time');
     }
     return this;
   }
-
   limitFields() {
     if (this.queryString.fields) {
       const fields = this.queryString.fields.split(',').join(' ');
@@ -56,15 +47,12 @@ class ApiFeatures {
     }
     return this;
   }
-
   paginate() {
     const page = parseInt(this.queryString.page, 10) || 1;
     const limit = parseInt(this.queryString.limit, 10) || 20;
     const skip = (page - 1) * limit;
-
     this.query = this.query.skip(skip).limit(limit);
     return this;
   }
 }
-
 export default ApiFeatures;

@@ -8,14 +8,12 @@ import {
   AlertCircle, Globe, BarChart3, Navigation,
   Compass, Wifi, ShieldAlert, Database
 } from 'lucide-react';
-
 const EarthquakeDetail = () => {
   const { id } = useParams();
   const [earthquake, setEarthquake] = useState(null);
   const [nearbyQuakes, setNearbyQuakes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   useEffect(() => {
     const fetchDetail = async () => {
       try {
@@ -23,14 +21,11 @@ const EarthquakeDetail = () => {
         const res = await earthquakeService.getEarthquakeById(id);
         const eq = res.data || res;
         setEarthquake(eq);
-
-        // Fetch nearby earthquakes for the map using the geospatial API
         if (eq.latitude && eq.longitude) {
           try {
             const nearby = await earthquakeService.getNearby(eq.latitude, eq.longitude, 500, 20);
             setNearbyQuakes(nearby.data || nearby || []);
           } catch (e) {
-            // Fallback: just use this earthquake on the map
             setNearbyQuakes([eq]);
           }
         }
@@ -43,7 +38,6 @@ const EarthquakeDetail = () => {
     };
     fetchDetail();
   }, [id]);
-
   const getMagStyle = (mag) => {
     if (mag >= 7) return { bg: 'bg-gradient-to-br from-red-800 to-red-600', color: 'text-red-200', glow: 'shadow-[0_0_40px_rgba(220,38,38,0.4)]', label: 'EXTREME' };
     if (mag >= 6) return { bg: 'bg-gradient-to-br from-red-700 to-red-500', color: 'text-red-200', glow: 'shadow-[0_0_30px_rgba(239,68,68,0.35)]', label: 'SEVERE' };
@@ -51,7 +45,6 @@ const EarthquakeDetail = () => {
     if (mag >= 4) return { bg: 'bg-gradient-to-br from-yellow-700 to-yellow-500', color: 'text-yellow-100', glow: 'shadow-[0_0_20px_rgba(234,179,8,0.25)]', label: 'MODERATE' };
     return { bg: 'bg-gradient-to-br from-emerald-800 to-emerald-500', color: 'text-emerald-100', glow: 'shadow-[0_0_20px_rgba(16,185,129,0.25)]', label: 'LIGHT' };
   };
-
   const getRiskStyle = (risk) => {
     switch (risk) {
       case 'Critical': return { color: 'text-red-500', bg: 'bg-red-500/10', icon: '🔴' };
@@ -60,13 +53,11 @@ const EarthquakeDetail = () => {
       default: return { color: 'text-emerald-500', bg: 'bg-emerald-500/10', icon: '🟢' };
     }
   };
-
   const getDepthCategory = (depth) => {
     if (depth <= 70) return { label: 'Shallow', color: 'text-red-500' };
     if (depth <= 300) return { label: 'Intermediate', color: 'text-amber-500' };
     return { label: 'Deep', color: 'text-blue-500' };
   };
-
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[80vh] gap-6">
@@ -75,7 +66,6 @@ const EarthquakeDetail = () => {
       </div>
     );
   }
-
   if (error || !earthquake) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[80vh] text-center p-8">
@@ -86,27 +76,21 @@ const EarthquakeDetail = () => {
       </div>
     );
   }
-
   const magStyle = getMagStyle(earthquake.magnitude);
   const riskStyle = getRiskStyle(earthquake.riskLevel);
   const depthCat = getDepthCategory(earthquake.depth);
   const lat = earthquake.latitude || earthquake.location?.coordinates?.[1];
   const lng = earthquake.longitude || earthquake.location?.coordinates?.[0];
   const mapData = nearbyQuakes.length > 0 ? nearbyQuakes : [earthquake];
-
   return (
     <div className="animate-fade-in w-full max-w-[1300px] mx-auto px-4 sm:px-6 py-8 pb-16 min-h-[85vh]">
       <Helmet>
         <title>Mag {earthquake.magnitude?.toFixed(1)} — {earthquake.place} | QuakeVision</title>
         <meta name="description" content={`Detailed seismic analysis for the ${earthquake.magnitude?.toFixed(1)} magnitude earthquake near ${earthquake.place}.`} />
       </Helmet>
-
-      {/* Back link */}
       <Link to="/earthquakes" className="inline-flex items-center gap-2 text-slate-500 font-medium mb-8 px-4 py-2 rounded-xl transition-all hover:bg-brand-500/10 hover:text-brand-500">
         <ArrowLeft size={18} /> Back to Earthquake List
       </Link>
-
-      {/* ===== HERO HEADER ===== */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 items-start mb-10">
         <div>
           <div className="flex flex-wrap items-center gap-3 mb-4">
@@ -137,19 +121,13 @@ const EarthquakeDetail = () => {
             )}
           </div>
         </div>
-
-        {/* Magnitude Hero Badge */}
         <div className={`${magStyle.bg} ${magStyle.glow} rounded-3xl p-6 sm:p-8 flex flex-col items-center justify-center min-w-[200px] animate-pulse-glow`}>
           <span className={`${magStyle.color} text-xs font-bold uppercase tracking-[0.15em] mb-1`}>{magStyle.label}</span>
           <span className="text-white text-6xl sm:text-7xl font-black leading-none">{earthquake.magnitude?.toFixed(1)}</span>
           <span className={`${magStyle.color} text-sm font-semibold mt-2`}>{earthquake.magType?.toUpperCase() || 'MAG'}</span>
         </div>
       </div>
-
-      {/* ===== ANALYTICS BENTO GRID ===== */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
-
-        {/* Depth Card */}
         <div className="card flex items-center gap-5">
           <div className="p-4 bg-indigo-500/10 text-indigo-500 rounded-2xl shrink-0">
             <Layers size={32} />
@@ -162,8 +140,6 @@ const EarthquakeDetail = () => {
             <span className={`text-xs font-semibold ${depthCat.color}`}>● {depthCat.label} Earthquake</span>
           </div>
         </div>
-
-        {/* Risk Level Card */}
         <div className="card flex items-center gap-5">
           <div className={`p-4 ${riskStyle.bg} ${riskStyle.color} rounded-2xl shrink-0`}>
             <AlertCircle size={32} />
@@ -174,8 +150,6 @@ const EarthquakeDetail = () => {
             <span className="text-xs text-slate-500 font-medium">Auto-calculated from M & Depth</span>
           </div>
         </div>
-
-        {/* Seismic Network Card */}
         <div className="card flex items-center gap-5">
           <div className="p-4 bg-emerald-500/10 text-emerald-500 rounded-2xl shrink-0">
             <Wifi size={32} />
@@ -187,8 +161,6 @@ const EarthquakeDetail = () => {
           </div>
         </div>
       </div>
-
-      {/* ===== TECHNICAL DETAILS TABLE ===== */}
       <div className="card p-6 sm:p-8 mb-10">
         <h3 className="flex items-center gap-3 text-xl font-bold text-slate-900 dark:text-white mb-6">
           <Database size={24} className="text-brand-500" /> Technical Seismological Data
@@ -214,8 +186,6 @@ const EarthquakeDetail = () => {
           ))}
         </div>
       </div>
-
-      {/* ===== EPICENTER MAP ===== */}
       <div className="mb-10">
         <h3 className="flex items-center gap-3 text-xl font-bold text-slate-900 dark:text-white mb-3">
           <Globe size={24} className="text-brand-500" /> Epicenter & Nearby Seismic Activity
@@ -233,8 +203,6 @@ const EarthquakeDetail = () => {
           </div>
         </div>
       </div>
-
-      {/* ===== TIMESTAMPS ===== */}
       <div className="card flex flex-col sm:flex-row justify-between gap-6">
         <div>
           <span className="text-xs text-slate-500 font-bold uppercase">Event Time</span>
@@ -257,9 +225,7 @@ const EarthquakeDetail = () => {
           </div>
         </div>
       </div>
-
     </div>
   );
 };
-
 export default EarthquakeDetail;

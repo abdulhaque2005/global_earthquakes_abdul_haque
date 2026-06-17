@@ -1,7 +1,5 @@
 import Earthquake from '../models/Earthquake.js';
-
 class AnalyticsService {
-
   async getMagnitudeDistribution() {
     return await Earthquake.aggregate([
       {
@@ -18,11 +16,9 @@ class AnalyticsService {
       },
     ]);
   }
-
   async getTopCountries(limit = 10) {
     return await Earthquake.aggregate([
       {
-
         $addFields: {
           country: {
             $cond: {
@@ -45,7 +41,6 @@ class AnalyticsService {
       { $limit: limit },
     ]);
   }
-
   async getRiskZones() {
     return await Earthquake.aggregate([
       {
@@ -57,7 +52,6 @@ class AnalyticsService {
         },
       },
       {
-
         $addFields: {
           sortOrder: {
             $switch: {
@@ -76,7 +70,6 @@ class AnalyticsService {
       { $project: { sortOrder: 0 } },
     ]);
   }
-
   async getYearlyTrends() {
     return await Earthquake.aggregate([
       {
@@ -93,5 +86,4 @@ class AnalyticsService {
     ]);
   }
 }
-
 export default new AnalyticsService();

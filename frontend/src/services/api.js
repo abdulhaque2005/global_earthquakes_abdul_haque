@@ -1,14 +1,11 @@
 import axios from 'axios';
 import { config } from '../config/config';
-
 const api = axios.create({
   baseURL: config.API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
-
-// Request interceptor to add token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -19,5 +16,4 @@ api.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
-
 export default api;

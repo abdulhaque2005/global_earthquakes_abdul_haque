@@ -1,6 +1,5 @@
 import React from 'react';
 import { Globe } from 'lucide-react';
-
 const Footer = () => {
   return (
     <footer style={{
@@ -19,5 +18,4 @@ const Footer = () => {
     </footer>
   );
 };
-
 export default Footer;

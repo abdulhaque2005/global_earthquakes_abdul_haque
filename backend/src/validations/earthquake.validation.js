@@ -1,5 +1,4 @@
 import { body } from 'express-validator';
-
 export const createEarthquakeValidation = [
   body('latitude')
     .notEmpty()
@@ -26,7 +25,6 @@ export const createEarthquakeValidation = [
     .notEmpty()
     .withMessage('Place string descriptor is mandatory for local index identification.'),
 ];
-
 export const updateEarthquakeValidation = [
   body('latitude')
     .optional()

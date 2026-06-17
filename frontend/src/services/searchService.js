@@ -1,5 +1,4 @@
 import api from './api';
-
 export const searchService = {
   searchEarthquakes: async (query) => {
     try {

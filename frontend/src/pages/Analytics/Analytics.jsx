@@ -6,9 +6,7 @@ import {
   LineChart, Line, PieChart, Pie, Cell, AreaChart, Area 
 } from 'recharts';
 import { Activity, Globe, AlertTriangle, Map, Layers, BarChart3 } from 'lucide-react';
-
 const COLORS = ['#14b8a6', '#6366f1', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'];
-
 const Analytics = () => {
   const [data, setData] = useState({
     magnitudeData: [],
@@ -19,7 +17,6 @@ const Analytics = () => {
     networkData: []
   });
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
@@ -31,7 +28,6 @@ const Analytics = () => {
           analyticsService.getDepthAnalysis(),
           analyticsService.getNetworkAnalysis()
         ]);
-        
         setData({
           magnitudeData: magRes.data || magRes,
           countryData: countryRes.data || countryRes,
@@ -46,10 +42,8 @@ const Analytics = () => {
         setLoading(false);
       }
     };
-    
     fetchAnalytics();
   }, []);
-
   if (loading) {
     return (
       <div className="flex flex-col justify-center items-center h-[70vh] gap-4">
@@ -58,20 +52,14 @@ const Analytics = () => {
       </div>
     );
   }
-
-  // Format country data for Bar Chart (top 10)
   const topCountries = (data.countryData || []).slice(0, 10).map(c => ({
     name: c._id || 'Unknown',
     count: c.totalQuakes || c.count || 0
   }));
-
-  // Format Risk Zone data for Pie Chart
   const riskPieData = (data.riskZones || []).map(r => ({
     name: r._id || 'Unknown Risk',
     value: r.count || 0
   }));
-
-  // Format Depth Data
   const getDepthLabel = (id) => {
     if (id === 0) return '0-30 km';
     if (id === 30) return '30-70 km';
@@ -81,13 +69,10 @@ const Analytics = () => {
     if (id === 500) return '500+ km';
     return `${id} km`;
   };
-
   const depthFormatted = (data.depthData || []).map(d => ({
     range: getDepthLabel(d._id),
     count: d.count || 0
   }));
-
-  // Format Monthly Data
   const monthlyFormatted = (data.monthlyData || [])
     .map(m => ({
       month: m._id ? `${m._id.year}-${String(m._id.month).padStart(2, '0')}` : 'Unknown',
@@ -99,14 +84,11 @@ const Analytics = () => {
       if (a.year !== b.year) return a.year - b.year;
       return a.monthNum - b.monthNum;
     });
-
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6 pb-10">
       <Helmet>
         <title>Deep Analytics | QuakeVision</title>
       </Helmet>
-
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 animate-slide-up">
         <div>
           <h1 className="font-display text-2xl md:text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
@@ -117,10 +99,7 @@ const Analytics = () => {
           </p>
         </div>
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
-        {/* Monthly Trend Area Chart */}
         <div className="card animate-slide-up" style={{ animationDelay: '0.1s' }}>
           <h3 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2 mb-6">
             <Activity className="text-brand-500" size={20} /> Monthly Activity Trend
@@ -150,8 +129,6 @@ const Analytics = () => {
             )}
           </div>
         </div>
-
-        {/* Top Countries Bar Chart */}
         <div className="card animate-slide-up" style={{ animationDelay: '0.2s' }}>
           <h3 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2 mb-6">
             <Globe className="text-indigo-500" size={20} /> Most Active Regions (Top 10)
@@ -179,8 +156,6 @@ const Analytics = () => {
             )}
           </div>
         </div>
-
-        {/* Risk Zones Pie Chart */}
         <div className="card animate-slide-up" style={{ animationDelay: '0.3s' }}>
           <h3 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2 mb-6">
             <AlertTriangle className="text-amber-500" size={20} /> Risk Zone Distribution
@@ -219,8 +194,6 @@ const Analytics = () => {
             )}
           </div>
         </div>
-
-        {/* Depth Analysis Bar Chart */}
         <div className="card animate-slide-up" style={{ animationDelay: '0.4s' }}>
           <h3 className="font-semibold text-slate-900 dark:text-white flex items-center gap-2 mb-6">
             <Layers className="text-pink-500" size={20} /> Event Depth Classification
@@ -244,10 +217,8 @@ const Analytics = () => {
             )}
           </div>
         </div>
-        
       </div>
     </div>
   );
 };
-
 export default Analytics;

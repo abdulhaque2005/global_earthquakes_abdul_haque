@@ -15,7 +15,7 @@ import * as Yup from 'yup';
 const UserManagement = () => {
   const dispatch = useDispatch();
   const { usersList, loading } = useSelector((state) => state.users);
-  
+
   const [openCreate, setOpenCreate] = useState(false);
   const [openRole, setOpenRole] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -57,25 +57,25 @@ const UserManagement = () => {
         <meta name="description" content="Manage user accounts, roles, and access permissions within the QuakeVision administration platform." />
         <meta name="keywords" content="quakevision user management, admin user control, access management, role management" />
       </Helmet>
-      
+
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold flex items-center gap-3">
-          <Shield color="var(--primary)" /> User Management
+        <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+          <Shield className="text-brand-500" /> User Management
         </h1>
         <Button 
           variant="contained" 
           startIcon={<UserPlus size={18} />}
           onClick={() => setOpenCreate(true)}
-          sx={{ bgcolor: 'var(--primary)', '&:hover': { bgcolor: 'var(--primary-hover)' } }}
+          sx={{ bgcolor: '#0d9488', '&:hover': { bgcolor: '#0f766e' }, textTransform: 'none', borderRadius: '12px', fontWeight: 600 }}
         >
           Add User
         </Button>
       </div>
 
-      <TableContainer component={Paper} sx={{ bgcolor: 'var(--glass-bg)', border: '1px solid var(--glass-border)', color: 'white' }}>
+      <TableContainer component={Paper} sx={{ bgcolor: 'transparent', border: '1px solid', borderColor: 'rgba(148,163,184,0.2)', borderRadius: '16px', overflow: 'hidden', boxShadow: 'none' }}>
         <Table>
           <TableHead>
-            <TableRow sx={{ '& th': { color: 'var(--text-muted)', borderBottom: '1px solid var(--glass-border)' } }}>
+            <TableRow sx={{ '& th': { color: '#94a3b8', borderBottom: '1px solid rgba(148,163,184,0.2)', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' } }}>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Role</TableCell>
@@ -85,22 +85,22 @@ const UserManagement = () => {
           </TableHead>
           <TableBody>
             {loading ? (
-              <TableRow><TableCell colSpan={5} align="center"><CircularProgress /></TableCell></TableRow>
+              <TableRow><TableCell colSpan={5} align="center" sx={{ py: 6, borderBottom: 'none' }}><CircularProgress sx={{ color: '#14b8a6' }} /></TableCell></TableRow>
             ) : usersList.map((user) => (
-              <TableRow key={user._id} sx={{ '& td': { color: 'white', borderBottom: '1px solid var(--glass-border)' } }}>
-                <TableCell>{user.name}</TableCell>
-                <TableCell>{user.email}</TableCell>
+              <TableRow key={user._id} sx={{ '& td': { borderBottom: '1px solid rgba(148,163,184,0.1)' } }}>
+                <TableCell sx={{ color: 'inherit', fontWeight: 500 }}>{user.name}</TableCell>
+                <TableCell sx={{ color: '#94a3b8' }}>{user.email}</TableCell>
                 <TableCell>
-                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${user.role === 'admin' ? 'bg-red-500/20 text-red-500' : 'bg-blue-500/20 text-blue-500'}`}>
+                  <span className={`px-3 py-1 rounded-full text-xs font-bold ${user.role === 'admin' ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 'bg-brand-500/10 text-brand-500 border border-brand-500/20'}`}>
                     {user.role.toUpperCase()}
                   </span>
                 </TableCell>
-                <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
+                <TableCell sx={{ color: '#94a3b8' }}>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
                 <TableCell align="right">
-                  <IconButton color="primary" onClick={() => { setSelectedUser(user); setOpenRole(true); }}>
+                  <IconButton sx={{ color: '#14b8a6' }} onClick={() => { setSelectedUser(user); setOpenRole(true); }}>
                     <Edit size={18} />
                   </IconButton>
-                  <IconButton color="error" onClick={() => handleDelete(user._id)}>
+                  <IconButton sx={{ color: '#ef4444' }} onClick={() => handleDelete(user._id)}>
                     <Delete size={18} />
                   </IconButton>
                 </TableCell>
@@ -110,29 +110,27 @@ const UserManagement = () => {
         </Table>
       </TableContainer>
 
-      {/* Change Role Dialog */}
-      <Dialog open={openRole} onClose={() => setOpenRole(false)} PaperProps={{ sx: { bgcolor: '#1e293b', color: 'white' } }}>
-        <DialogTitle>Change User Role</DialogTitle>
+      <Dialog open={openRole} onClose={() => setOpenRole(false)} PaperProps={{ sx: { bgcolor: '#1e293b', color: 'white', borderRadius: '16px' } }}>
+        <DialogTitle sx={{ fontWeight: 700 }}>Change User Role</DialogTitle>
         <DialogContent>
-          <p className="mb-4">Update role for {selectedUser?.name}</p>
+          <p className="mb-4 text-slate-400">Update role for <span className="text-white font-semibold">{selectedUser?.name}</span></p>
           <Select
             fullWidth
             value={selectedUser?.role || 'user'}
             onChange={handleRoleChange}
-            sx={{ color: 'white', '.MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.2)' } }}
+            sx={{ color: 'white', '.MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.2)' }, '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#14b8a6' }, borderRadius: '12px' }}
           >
             <MenuItem value="user">User</MenuItem>
             <MenuItem value="admin">Admin</MenuItem>
           </Select>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenRole(false)} sx={{ color: 'var(--text-muted)' }}>Cancel</Button>
+        <DialogActions sx={{ p: 2 }}>
+          <Button onClick={() => setOpenRole(false)} sx={{ color: '#94a3b8', textTransform: 'none' }}>Cancel</Button>
         </DialogActions>
       </Dialog>
 
-      {/* Create User Dialog */}
-      <Dialog open={openCreate} onClose={() => setOpenCreate(false)} PaperProps={{ sx: { bgcolor: '#1e293b', color: 'white', width: '400px' } }}>
-        <DialogTitle>Create New User</DialogTitle>
+      <Dialog open={openCreate} onClose={() => setOpenCreate(false)} PaperProps={{ sx: { bgcolor: '#1e293b', color: 'white', width: '400px', borderRadius: '16px' } }}>
+        <DialogTitle sx={{ fontWeight: 700 }}>Create New User</DialogTitle>
         <form onSubmit={formik.handleSubmit}>
           <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField 
@@ -142,7 +140,7 @@ const UserManagement = () => {
               helperText={formik.touched.name && formik.errors.name}
               InputLabelProps={{ style: { color: '#94a3b8' } }}
               InputProps={{ style: { color: 'white' } }}
-              sx={{ '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' } } }}
+              sx={{ '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' }, '&:hover fieldset': { borderColor: '#14b8a6' }, borderRadius: '12px' } }}
             />
             <TextField 
               fullWidth label="Email" name="email" type="email"
@@ -151,7 +149,7 @@ const UserManagement = () => {
               helperText={formik.touched.email && formik.errors.email}
               InputLabelProps={{ style: { color: '#94a3b8' } }}
               InputProps={{ style: { color: 'white' } }}
-              sx={{ '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' } } }}
+              sx={{ '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' }, '&:hover fieldset': { borderColor: '#14b8a6' }, borderRadius: '12px' } }}
             />
             <TextField 
               fullWidth label="Password" name="password" type="password"
@@ -160,12 +158,12 @@ const UserManagement = () => {
               helperText={formik.touched.password && formik.errors.password}
               InputLabelProps={{ style: { color: '#94a3b8' } }}
               InputProps={{ style: { color: 'white' } }}
-              sx={{ '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' } } }}
+              sx={{ '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'rgba(255,255,255,0.2)' }, '&:hover fieldset': { borderColor: '#14b8a6' }, borderRadius: '12px' } }}
             />
           </DialogContent>
           <DialogActions sx={{ p: 2 }}>
-            <Button onClick={() => setOpenCreate(false)} sx={{ color: 'var(--text-muted)' }}>Cancel</Button>
-            <Button type="submit" variant="contained" sx={{ bgcolor: 'var(--primary)' }}>Create User</Button>
+            <Button onClick={() => setOpenCreate(false)} sx={{ color: '#94a3b8', textTransform: 'none' }}>Cancel</Button>
+            <Button type="submit" variant="contained" sx={{ bgcolor: '#0d9488', '&:hover': { bgcolor: '#0f766e' }, textTransform: 'none', borderRadius: '12px', fontWeight: 600 }}>Create User</Button>
           </DialogActions>
         </form>
       </Dialog>

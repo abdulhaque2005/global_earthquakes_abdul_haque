@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers } from '../../store/slices/userSlice';
-import { Users, Shield, Activity, BarChart3 } from 'lucide-react';
+import { Users, Shield, Activity, BarChart3, User } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 
@@ -17,62 +17,71 @@ const AdminDashboard = () => {
   const userCount = usersList.filter(u => u.role === 'user').length;
 
   return (
-    <div style={{ padding: '2rem 0' }}>
+    <div className="w-full max-w-6xl mx-auto py-8 space-y-8">
       <Helmet>
         <title>Admin Dashboard | QuakeVision - Global Earthquake Analytics</title>
         <meta name="description" content="Administration panel for QuakeVision. Manage users, monitor system health, and oversee earthquake tracking settings." />
         <meta name="keywords" content="quakevision admin, administration dashboard, system management, user management portal" />
       </Helmet>
-      
-      <div className="flex items-center gap-3 mb-8">
-        <Shield color="var(--primary)" size={36} /> 
-        <h1 className="text-3xl font-bold m-0">Admin Control Panel</h1>
+
+      <div className="flex items-center gap-3">
+        <div className="p-3 rounded-xl bg-brand-500/10 text-brand-500">
+          <Shield size={28} />
+        </div>
+        <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">Admin Control Panel</h1>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="glass-panel p-6 flex flex-col gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="card flex flex-col gap-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-gray-400 m-0">Total Registered Users</h3>
-            <Users color="var(--primary)" size={24} />
+            <h3 className="text-slate-500 dark:text-slate-400 text-sm font-medium">Total Registered Users</h3>
+            <div className="p-2 rounded-xl bg-brand-500/10 text-brand-500">
+              <Users size={20} />
+            </div>
           </div>
-          <p className="text-4xl font-bold m-0">{loading ? '...' : usersList.length}</p>
+          <p className="font-display text-4xl font-bold text-slate-900 dark:text-white">{loading ? '...' : usersList.length}</p>
         </div>
 
-        <div className="glass-panel p-6 flex flex-col gap-4">
+        <div className="card flex flex-col gap-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-gray-400 m-0">Admin Accounts</h3>
-            <Shield color="var(--warning)" size={24} />
+            <h3 className="text-slate-500 dark:text-slate-400 text-sm font-medium">Admin Accounts</h3>
+            <div className="p-2 rounded-xl bg-amber-500/10 text-amber-500">
+              <Shield size={20} />
+            </div>
           </div>
-          <p className="text-4xl font-bold m-0">{loading ? '...' : adminCount}</p>
+          <p className="font-display text-4xl font-bold text-slate-900 dark:text-white">{loading ? '...' : adminCount}</p>
         </div>
 
-        <div className="glass-panel p-6 flex flex-col gap-4">
+        <div className="card flex flex-col gap-4">
           <div className="flex justify-between items-center">
-            <h3 className="text-gray-400 m-0">Standard Users</h3>
-            <User color="var(--success)" size={24} />
+            <h3 className="text-slate-500 dark:text-slate-400 text-sm font-medium">Standard Users</h3>
+            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-500">
+              <User size={20} />
+            </div>
           </div>
-          <p className="text-4xl font-bold m-0">{loading ? '...' : userCount}</p>
+          <p className="font-display text-4xl font-bold text-slate-900 dark:text-white">{loading ? '...' : userCount}</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="glass-panel p-6">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><Users /> Manage Users</h2>
-          <p className="text-gray-400 mb-6">Create, update, and manage all users registered on the platform. Assign roles and permissions.</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="card">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+            <Users size={20} className="text-brand-500" /> Manage Users
+          </h2>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">Create, update, and manage all users registered on the platform. Assign roles and permissions.</p>
           <Link to="/admin/users" className="btn btn-primary">Go to User Management</Link>
         </div>
-        
-        <div className="glass-panel p-6">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2"><BarChart3 /> System Analytics</h2>
-          <p className="text-gray-400 mb-6">View global system analytics, API usage, and performance metrics.</p>
+
+        <div className="card">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+            <BarChart3 size={20} className="text-indigo-500" /> System Analytics
+          </h2>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">View global system analytics, API usage, and performance metrics.</p>
           <Link to="/analytics" className="btn btn-primary">View Analytics</Link>
         </div>
       </div>
     </div>
   );
 };
-
-// Mock User Icon since it's not imported at top
-const User = ({ color, size }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>;
 
 export default AdminDashboard;

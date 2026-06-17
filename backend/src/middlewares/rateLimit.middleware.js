@@ -1,5 +1,4 @@
 import rateLimit from 'express-rate-limit';
-
 export const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 200,
@@ -10,7 +9,6 @@ export const globalLimiter = rateLimit({
   standardHeaders: 'draft-7',
   legacyHeaders: false,
 });
-
 export const authLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   limit: 20,

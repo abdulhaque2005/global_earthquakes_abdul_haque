@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { earthquakeService } from '../../services/earthquakeService';
 import { statsService } from '../../services/statsService';
-
 export const fetchEarthquakes = createAsyncThunk('data/fetchEarthquakes', async (limit = 100, { rejectWithValue }) => {
   try {
     const res = await earthquakeService.getRecentEarthquakes(limit);
@@ -10,7 +9,6 @@ export const fetchEarthquakes = createAsyncThunk('data/fetchEarthquakes', async 
     return rejectWithValue(error.response?.data?.error || 'Failed to fetch earthquakes');
   }
 });
-
 export const fetchStats = createAsyncThunk('data/fetchStats', async (_, { rejectWithValue }) => {
   try {
     const res = await statsService.getOverview();
@@ -19,14 +17,12 @@ export const fetchStats = createAsyncThunk('data/fetchStats', async (_, { reject
     return rejectWithValue(error.response?.data?.error || 'Failed to fetch stats');
   }
 });
-
 const initialState = {
   earthquakes: [],
   stats: null,
   loading: false,
   error: null,
 };
-
 const dataSlice = createSlice({
   name: 'data',
   initialState,
@@ -61,6 +57,5 @@ const dataSlice = createSlice({
       });
   },
 });
-
 export const { addEarthquake } = dataSlice.actions;
 export default dataSlice.reducer;
