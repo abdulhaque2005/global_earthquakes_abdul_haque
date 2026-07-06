@@ -1,5 +1,33 @@
 # QuakeVision — AI-Powered Earthquake Intelligence Platform
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Frontend-React-blue?style=flat&logo=react" alt="Frontend: React" />
+  <img src="https://img.shields.io/badge/Backend-Node.js-339933?style=flat&logo=nodedotjs" alt="Backend: Node.js" />
+  <img src="https://img.shields.io/badge/Database-MongoDB-47A248?style=flat&logo=mongodb" alt="Database: MongoDB" />
+  <img src="https://img.shields.io/badge/Styling-TailwindCSS-38B2AC?style=flat&logo=tailwindcss" alt="Styling: TailwindCSS" />
+  <img src="https://img.shields.io/badge/State-Redux_Toolkit-764ABC?style=flat&logo=redux" alt="State: Redux" />
+  <img src="https://img.shields.io/badge/Real--time-Socket.IO-010101?style=flat&logo=socketdotio" alt="Real-time: Socket.IO" />
+  <img src="https://img.shields.io/badge/Map-Leaflet-199900?style=flat&logo=leaflet" alt="Map: Leaflet" />
+</p>
+
+## 🔴 The Problem
+
+Every year, thousands of earthquakes occur globally, causing massive loss of life and infrastructure. However, the existing systems have major flaws:
+* **Raw & Complex Data:** Organizations like USGS provide earthquake data, but it is in a raw format that is very difficult for normal people to understand.
+* **No Real-time Maps:** There are very few platforms that show live earthquakes on an interactive map in a simple way.
+* **No Danger Prediction:** It is hard to look at old earthquake data and predict which areas are in "High Risk" right now.
+* **Lack of Instant Alerts:** People do not get instant emergency alerts on their screens when a dangerous earthquake happens.
+
+## 🟢 The Solution
+
+**QuakeVision** was built to solve these exact problems. It is an intelligent platform that makes earthquake tracking simple, visual, and proactive:
+* **Interactive Visuals:** We take the complex raw data and show it beautifully on an Interactive World Map and simple charts, making it easy to see the danger zones.
+* **AI & Smart Analytics:** Our system automatically analyzes past earthquakes and predicts the Risk Level (Low, Medium, High) for different areas.
+* **Real-time Emergency Alerts:** We built a live WebSocket system that instantly flashes emergency alerts on the screen if a severe earthquake hits.
+* **Advanced Search:** Users can easily search the history of earthquakes by country, date, depth, or magnitude in just a few clicks.
+
+---
+
 ## Project Overview
 
 QuakeVision is an advanced MERN stack based earthquake intelligence and disaster analytics platform.
@@ -32,6 +60,14 @@ The dataset already contains important earthquake-related fields such as:
 * locationSource
 * seismic source information
 * update timestamps
+
+---
+
+# API Documentation
+
+The complete API documentation for QuakeVision is available on Postman. It includes all 100+ endpoints with detailed markdown descriptions, parameters, and payloads.
+
+👉 **[View Postman API Documentation](https://documenter.getpostman.com/view/50840515/2sBY4Jv2vS)**
 
 ---
 
